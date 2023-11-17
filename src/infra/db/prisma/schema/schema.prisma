@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Answer {
+  id          String   @id(map: "PK_ANSWER") @unique(map: "UQ_ANSWER_ID") @db.VarChar(150)
+  description String?  @db.VarChar(750)
+  createdAt   DateTime @map("created_at") @db.Timestamp(6)
+
+  userId        String? @map("user_id") @db.VarChar(150)
+  questionId    String? @map("question_id") @db.VarChar(150)
+  alternativeId String? @map("alternative_id") @db.VarChar(150)
+
+  Alternative Alternative? @relation(fields: [alternativeId], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "FK_ALTERNATIVE_ANSWER")
+  Question    Question?    @relation(fields: [questionId], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "FK_QUESTION_ANSWER")
+  User        User?        @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "FK_USER_ANSWER")
+
+  @@map("ANSWER")
+}
+
+model BusinessCanvas {
+  id        String   @id(map: "PK_BUSINESS_CANVAS") @unique(map: "UQ_BUSINESS_CANVAS_ID") @db.VarChar(150)
+  name      String   @db.VarChar(50)
+  createdAt DateTime @map("created_at") @db.Timestamp(6)
+
+  userId String? @map("user_id") @db.VarChar(150)
+
+  User                    User?                     @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "FK_USER_BUSINESS_CANVAS")
+  BusinessCanvasComponent BusinessCanvasComponent[]
+
+  @@map("BUSINESS_CANVAS")
+}
+
+model BusinessCanvasComponent {
+  businessCanvasId String   @map("business_canvas_id") @db.VarChar(150)
+  componentName    String   @map("component_name") @db.VarChar(150)
+  topics           String[] @db.VarChar(1000)
+
+  BusinessCanvas BusinessCanvas? @relation(fields: [businessCanvasId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_BUSINESS_CANVAS_BUSINESS_CANVAS_COMPONENT")
+  Component      Component?      @relation(fields: [componentName], references: [name], onDelete: Cascade, onUpdate: NoAction, map: "FK_COMPONENT_BUSINESS_CANVAS_COMPONENT")
+
+  @@id([businessCanvasId, componentName], map: "PK_BUSINESS_CANVAS_COMPONENT")
+  @@unique([businessCanvasId, componentName], map: "UQ_BUSINESS_CANVAS_COMPONENT_BUSINESS_CANVAS_ID_COMPONENT_NAME")
+  @@map("BUSINESS_CANVAS_COMPONENT")
+}
+
+model Component {
+  id   String @id(map: "PK_COMPONENT") @unique(map: "UQ_COMPONENT_ID") @db.VarChar(150)
+  name String @unique(map: "UQ_COMPONENT_NAME") @db.VarChar(40)
+
+  BusinessCanvasComponent BusinessCanvasComponent[]
+
+  @@map("COMPONENT")
+}
+
+model Question {
+  id      String @id(map: "PK_QUESTION") @unique(map: "UQ_QUESTION_ID") @db.VarChar(150)
+  content String @db.VarChar(250)
+
+  Answer      Answer[]
+  Alternative Alternative[]
+
+  @@map("QUESTION")
+}
+
+model Alternative {
+  id          String @id(map: "PK_ALTERNATIVE") @unique(map: "UQ_ALTERNATIVE_ID") @db.VarChar(150)
+  description String @db.VarChar(100)
+
+  questionId String @map("question_id") @db.VarChar(150)
+
+  Question Question @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_QUESTION_ALTERNATIVE")
+  Answer   Answer[]
+
+  @@map("ALTERNATIVE")
+}
+
+model User {
+  id        String   @id(map: "PK_USER") @unique(map: "UQ_USER_ID") @db.VarChar(150)
+  email     String   @unique(map: "UQ_USER_EMAIL") @db.VarChar(150)
+  name      String   @db.VarChar(50)
+  password  String   @db.VarChar(200)
+  role      Role
+  createdAt DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @map("updated_at") @db.Timestamp(6)
+
+  Answer         Answer[]
+  BusinessCanvas BusinessCanvas[]
+
+  @@map("USER")
+}
+
+enum Role {
+  user
+  admin
+
+  @@map("ROLE")
+}

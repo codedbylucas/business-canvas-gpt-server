@@ -1,0 +1,51 @@
+version: '3.3'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis-cache
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - /path/to/local/data:/root/redis
+      - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_HOST: ${REDIS_HOST}
+
+  db:
+    image: postgres:latest
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./data:/data/db
+    ports:
+      - ${DB_PORT}:5432
+
+  api:
+    container_name: api-container
+    build: .
+    restart: always
+    image: business-canvas-model
+    command: ./start.sh
+    volumes:
+      - ./dist:/usr/src/business-canvas-model/dist
+    ports:
+      - ${SERVER_PORT}:5050
+    environment:
+      - OPENAI_APY_KEY=${OPENAI_APY_KEY}
+      - JWT_SECRET_KEY={JWT_SECRET_KEY}
+      - RANDOM_USER_PASSWORD={RANDOM_USER_PASSWORD}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_HOST=${REDIS_HOST}
+    links:
+      - db
+      - redis
