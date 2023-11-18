@@ -32,7 +32,8 @@ describe('AddAndReplyQuestions Seed', () => {
     prisma = await PrismaHelper.getCli()
   })
 
-  afterEach(async () => {
+  beforeEach(async () => {
+    await redis.flushall()
     await prisma.question.deleteMany()
     await prisma.alternative.deleteMany()
   })
@@ -65,5 +66,14 @@ describe('AddAndReplyQuestions Seed', () => {
     const alternatives = await prisma.alternative.findMany()
     expect(questions.length).toBe(1)
     expect(alternatives.length).toBe(1)
+  })
+
+  it('Should not reply all Questions in Cache if have already been replicated', async () => {
+    await prisma.question.createMany({ data: makeFakeQuestions() })
+    await redis.set('questions', JSON.stringify(makeFakeQuestions()))
+    await addAndReplyQuestionsSeed()
+    const questionsJson = await redis.get('questions') as string
+    const questions = JSON.parse(questionsJson) as QuestionModel[]
+    expect(questions.length).toBe(1)
   })
 })
