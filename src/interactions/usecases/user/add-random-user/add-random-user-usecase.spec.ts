@@ -3,14 +3,14 @@ import type { Hasher } from '@/interactions/contracts/cryptography'
 import type { IdBuilder } from '@/interactions/contracts/id/id-builder'
 import type { UserModel } from '@/domain/models/db-models'
 import type { AddUserRepo } from '@/interactions/contracts/db'
+import type { AccessTokenBuilder } from '@/domain/contracts'
 import { AddRandomUserUseCase } from './add-random-user-usecase'
 import MockDate from 'mockdate'
-import { type AccessTokenBuilder } from '@/domain/contracts'
 
 const makeFakeUserModel = (): UserModel => ({
-  id: 'any_id',
+  id: 'any_id_3',
   name: 'Convidado',
-  email: 'any_id@convidado.com',
+  email: 'any_id_2@convidado.com',
   password: 'hashed_password',
   role: 'user',
   createdAt: new Date(),
@@ -27,12 +27,14 @@ const makeHasher = (): Hasher => {
 }
 
 const makeIdBuilder = (): IdBuilder => {
-  class IdBuilderStub implements IdBuilder {
+  class IdBuilderSpy implements IdBuilder {
+    private callsCount = 0
     build (): IdModel {
-      return { id: 'any_id' }
+      this.callsCount++
+      return { id: `any_id_${this.callsCount}` }
     }
   }
-  return new IdBuilderStub()
+  return new IdBuilderSpy()
 }
 
 const makeAddUserRepo = (): AddUserRepo => {
@@ -56,20 +58,20 @@ const makeAccessTokenBuilder = (): AccessTokenBuilder => {
 interface SutTypes {
   sut: AddRandomUserUseCase
   hasherStub: Hasher
-  idBuilderStub: IdBuilder
+  idBuilderSpy: IdBuilder
   addUserRepoStub: AddUserRepo
   accessTokenBuilderStub: AccessTokenBuilder
 }
 
 const makeSut = (): SutTypes => {
   const hasherStub = makeHasher()
-  const idBuilderStub = makeIdBuilder()
+  const idBuilderSpy = makeIdBuilder()
   const addUserRepoStub = makeAddUserRepo()
   const accessTokenBuilderStub = makeAccessTokenBuilder()
   const sut = new AddRandomUserUseCase(
-    hasherStub, idBuilderStub, addUserRepoStub, accessTokenBuilderStub
+    hasherStub, idBuilderSpy, addUserRepoStub, accessTokenBuilderStub
   )
-  return { sut, hasherStub, idBuilderStub, addUserRepoStub, accessTokenBuilderStub }
+  return { sut, hasherStub, idBuilderSpy, addUserRepoStub, accessTokenBuilderStub }
 }
 
 describe('AddRandomUser UseCase', () => {
@@ -81,11 +83,11 @@ describe('AddRandomUser UseCase', () => {
     MockDate.reset()
   })
 
-  it('Should call Hasher with correct password', async () => {
+  it('Should call Hasher with correct random password', async () => {
     const { sut, hasherStub } = makeSut()
     const hashingSpy = jest.spyOn(hasherStub, 'hashing')
     await sut.perform()
-    expect(hashingSpy).toHaveBeenCalledWith('any_password')
+    expect(hashingSpy).toHaveBeenCalledWith('any_id_1')
   })
 
   it('Should throw if Hasher throws', async () => {
@@ -98,15 +100,15 @@ describe('AddRandomUser UseCase', () => {
   })
 
   it('Should call IdBuilder', async () => {
-    const { sut, idBuilderStub } = makeSut()
-    const buildSpy = jest.spyOn(idBuilderStub, 'build')
+    const { sut, idBuilderSpy } = makeSut()
+    const buildSpy = jest.spyOn(idBuilderSpy, 'build')
     await sut.perform()
     expect(buildSpy).toHaveBeenCalled()
   })
 
   it('Should throw if IdBuilder throws', async () => {
-    const { sut, idBuilderStub } = makeSut()
-    jest.spyOn(idBuilderStub, 'build').mockImplementation(() => {
+    const { sut, idBuilderSpy } = makeSut()
+    jest.spyOn(idBuilderSpy, 'build').mockImplementation(() => {
       throw new Error()
     })
     const promise = sut.perform()
@@ -133,7 +135,7 @@ describe('AddRandomUser UseCase', () => {
     const { sut, accessTokenBuilderStub } = makeSut()
     const performSpy = jest.spyOn(accessTokenBuilderStub, 'perform')
     await sut.perform()
-    expect(performSpy).toHaveBeenCalledWith('any_id')
+    expect(performSpy).toHaveBeenCalledWith('any_id_3')
   })
 
   it('Should throw if AccessTokenBuilder throws', async () => {
