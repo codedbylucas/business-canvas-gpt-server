@@ -3,7 +3,6 @@ import type { AccessTokenModel } from '@/domain/models/output-models'
 import type { AddUserRepo } from '@/interactions/contracts/db'
 import type { IdBuilder } from '@/interactions/contracts/id/id-builder'
 import type { Hasher } from '@/interactions/contracts/cryptography'
-import env from '@/main/configs/env'
 
 export class AddRandomUserUseCase implements AddRandomUser {
   constructor (
@@ -14,7 +13,7 @@ export class AddRandomUserUseCase implements AddRandomUser {
   ) {}
 
   async perform (): Promise<AccessTokenModel> {
-    const { hash: password } = await this.hasher.hashing(env.randomUserPassword)
+    const { hash: password } = await this.hasher.hashing('any_password')
     const { id } = this.idBuilder.build()
     const email = `${id}@convidado.com`
     const date = new Date()

@@ -9,6 +9,5 @@ export default {
   redisHost: process.env.REDIS_HOST,
   redisPort: process.env.REDIS_PORT,
   redisPassword: process.env.REDIS_PASSWORD,
-  randomUserPassword: process.env.RANDOM_USER_PASSWORD ?? 'random_password',
   openAiApiKey: process.env.OPENAI_APY_KEY ?? 'any_key'
 }
