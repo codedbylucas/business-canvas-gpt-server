@@ -1,8 +1,7 @@
-import type { AccessTokenBuilder, AddRandomUser } from '@/domain/contracts'
-import type { AccessTokenModel } from '@/domain/models/output-models'
+import type { AccessTokenBuilder, AddRandomUser, AddRandomUserRes } from '@/domain/contracts'
+import type { Hasher } from '@/interactions/contracts/cryptography'
 import type { AddUserRepo } from '@/interactions/contracts/db'
 import type { IdBuilder } from '@/interactions/contracts/id/id-builder'
-import type { Hasher } from '@/interactions/contracts/cryptography'
 
 export class AddRandomUserUseCase implements AddRandomUser {
   constructor (
@@ -12,7 +11,7 @@ export class AddRandomUserUseCase implements AddRandomUser {
     private readonly accessTokenBuilder: AccessTokenBuilder
   ) {}
 
-  async perform (): Promise<AccessTokenModel> {
+  async perform (): Promise<AddRandomUserRes> {
     const ids: string[] = []
     for (let i = 0; i < 3; i++) {
       ids.push(this.idBuilder.build().id)
@@ -24,6 +23,7 @@ export class AddRandomUserUseCase implements AddRandomUser {
     await this.addUserRepo.add({
       id, password, email, name: 'Convidado', createdAt, updatedAt, role: 'user'
     })
-    return await this.accessTokenBuilder.perform(id)
+    const { token } = await this.accessTokenBuilder.perform(id)
+    return { id, token }
   }
 }

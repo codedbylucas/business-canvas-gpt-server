@@ -1,5 +1,8 @@
-import type { AccessTokenModel } from '@/domain/models/output-models'
+export interface AddRandomUserRes {
+  id: string
+  token: string
+}
 
 export interface AddRandomUser {
-  perform: () => Promise<AccessTokenModel>
+  perform: () => Promise<AddRandomUserRes>
 }
