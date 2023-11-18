@@ -14,7 +14,7 @@ const makeFakeComponentModels = (): ComponentModel[] => ([
 
 let prisma: PrismaClient
 
-describe('AddAndReplyQuestions Seed', () => {
+describe('AddAllComponents Seed', () => {
   beforeAll(async () => {
     await PrismaHelper.connect()
     prisma = await PrismaHelper.getCli()
