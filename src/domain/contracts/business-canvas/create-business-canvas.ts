@@ -14,7 +14,7 @@ export interface CreateBusinessCanvasDto {
 }
 
 export type CreateBusinessCanvasRes = Either<
-AnswerErrors, BusinessCanvasApiModel & { userId?: string }
+AnswerErrors, BusinessCanvasApiModel & { token?: string }
 >
 
 export interface CreateBusinessCanvas {

@@ -25,9 +25,11 @@ export class CreateBusinessCanvasUseCase implements CreateBusinessCanvas {
       return left(answerResult.value)
     }
     let userId = dto.userId as string
+    let token: string = ''
     if (!dto.userId) {
-      const { id } = await this.addRandomUser.perform()
-      userId = id
+      const randomUserResult = await this.addRandomUser.perform()
+      userId = randomUserResult.id
+      token = randomUserResult.token
     }
     const addManyAnswersDto = { userId, answers: dto.answers }
     await this.addManyAnswers.perform(addManyAnswersDto)
@@ -36,7 +38,7 @@ export class CreateBusinessCanvasUseCase implements CreateBusinessCanvas {
     const businessCanvasOutputModel = await this.createBusinessCanvasApi.create({ input })
     await this.addBusinessCanvas.perform({ userId, ...businessCanvasOutputModel })
     if (!dto.userId) {
-      return right({ userId, ...businessCanvasOutputModel })
+      return right({ token, ...businessCanvasOutputModel })
     }
     return right(businessCanvasOutputModel)
   }
