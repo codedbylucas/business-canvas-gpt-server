@@ -32,10 +32,10 @@ services:
     container_name: api-container
     build: .
     restart: always
-    image: business-canvas-model
-    command: ./start.sh
+    image: bcm
+    command: sh -c "npx prisma db push & npm run seed & npm start"
     volumes:
-      - ./dist:/usr/src/business-canvas-model/dist
+      - ./dist:/usr/src/bcm/dist
     ports:
       - ${SERVER_PORT}:5050
     environment:
