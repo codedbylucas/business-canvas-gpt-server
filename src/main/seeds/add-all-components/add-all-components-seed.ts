@@ -1,4 +1,3 @@
-import 'module-alias/register'
 import { PrismaHelper } from '@/infra/db/prisma/helpers/prisma-helper'
 import { addAllComponentsUseCaseFactory } from '../../factories/usecases/component/add-all-components'
 
