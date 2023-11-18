@@ -3,13 +3,13 @@ import { PrismaHelper } from '@/infra/db/prisma/helpers/prisma-helper'
 import { addManyQuestionsUseCaseFactory } from '../factories/usecases/question/add-many-questions-usecase-factory'
 import { replyQuestionsUseCaseFactory } from '../factories/usecases/question/reply-questions-usecase-factory'
 
-const addAndReplyQuestionsSeed = async (): Promise<void> => {
+export const addAndReplyQuestionsSeed = async (): Promise<void> => {
   await PrismaHelper.connect()
-  await addManyQuestionsUseCaseFactory().perform()
+  const prisma = await PrismaHelper.getCli()
+  const questions = await prisma.question.findMany()
+  if (!questions || questions.length === 0) {
+    await addManyQuestionsUseCaseFactory().perform()
+    console.log('Questions added successfully!')
+  }
   await replyQuestionsUseCaseFactory().perform()
 }
-
-export default addAndReplyQuestionsSeed()
-  .then(() => { console.log('Questions added to the DB and replicated to the Cache successfully!') })
-  .catch(console.error)
-  .finally(async () => { await PrismaHelper.disconnect() })
