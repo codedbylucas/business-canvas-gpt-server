@@ -1,6 +1,6 @@
-import type { AddManyAnswers, AddManyAnswersDto, AddBusinessCanvas, AddBusinessCanvasDto, AddRandomUser, CreateBusinessCanvas, CreateBusinessCanvasDto } from '@/domain/contracts'
+import type { AddManyAnswers, AddManyAnswersDto, AddBusinessCanvas, AddBusinessCanvasDto, AddRandomUser, CreateBusinessCanvas, CreateBusinessCanvasDto, AddRandomUserRes } from '@/domain/contracts'
 import type { CreateBusinessCanvasApi, CreateBusinessCanvasApiDto } from '@/interactions/contracts/api'
-import type { BusinessCanvasApiModel, IdModel } from '@/domain/models/output-models'
+import type { BusinessCanvasApiModel } from '@/domain/models/output-models'
 import type { QuestionModel } from '@/domain/models/db-models'
 import type { FetchAllQuestionsRepo } from '@/interactions/contracts/db'
 import type { CreateManyAnswersDto } from '@/domain/entities/answer/answer-dto'
@@ -92,8 +92,10 @@ const makeFetchAllQuestionsRepo = (): FetchAllQuestionsRepo => {
 
 const makeAddRandomUser = (): AddRandomUser => {
   class AddRandomUserStub implements AddRandomUser {
-    async perform (): Promise<IdModel> {
-      return await Promise.resolve({ id: 'any_random_user_id' })
+    async perform (): Promise<AddRandomUserRes> {
+      return await Promise.resolve({
+        id: 'any_random_user_id', token: 'any_token'
+      })
     }
   }
   return new AddRandomUserStub()
@@ -340,7 +342,7 @@ describe('CreateBusinessCanvas UseCase', () => {
     const { sut } = makeSut()
     const result = await sut.perform({ answers: makeFakeCreateBusinessCanvasDto().answers })
     expect(result.value).toEqual({
-      userId: 'any_random_user_id', ...makeFakeBusinessCanvasApiModel()
+      token: 'any_token', ...makeFakeBusinessCanvasApiModel()
     })
   })
 })
