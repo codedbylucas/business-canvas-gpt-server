@@ -1,10 +1,11 @@
-import type { HashedModel, IdModel } from '@/domain/models/output-models'
+import type { AccessTokenModel, HashedModel, IdModel } from '@/domain/models/output-models'
 import type { Hasher } from '@/interactions/contracts/cryptography'
 import type { IdBuilder } from '@/interactions/contracts/id/id-builder'
 import type { UserModel } from '@/domain/models/db-models'
 import type { AddUserRepo } from '@/interactions/contracts/db'
 import { AddRandomUserUseCase } from './add-random-user-usecase'
 import MockDate from 'mockdate'
+import { type AccessTokenBuilder } from '@/domain/contracts'
 
 const makeFakeUserModel = (): UserModel => ({
   id: 'any_id',
@@ -43,19 +44,32 @@ const makeAddUserRepo = (): AddUserRepo => {
   return new AddUserRepoStub()
 }
 
+const makeAccessTokenBuilder = (): AccessTokenBuilder => {
+  class AccessTokenBuilderStub implements AccessTokenBuilder {
+    async perform (value: string): Promise<AccessTokenModel> {
+      return { token: 'any_token' }
+    }
+  }
+  return new AccessTokenBuilderStub()
+}
+
 interface SutTypes {
   sut: AddRandomUserUseCase
   hasherStub: Hasher
   idBuilderStub: IdBuilder
   addUserRepoStub: AddUserRepo
+  accessTokenBuilderStub: AccessTokenBuilder
 }
 
 const makeSut = (): SutTypes => {
   const hasherStub = makeHasher()
   const idBuilderStub = makeIdBuilder()
   const addUserRepoStub = makeAddUserRepo()
-  const sut = new AddRandomUserUseCase(hasherStub, idBuilderStub, addUserRepoStub)
-  return { sut, hasherStub, idBuilderStub, addUserRepoStub }
+  const accessTokenBuilderStub = makeAccessTokenBuilder()
+  const sut = new AddRandomUserUseCase(
+    hasherStub, idBuilderStub, addUserRepoStub, accessTokenBuilderStub
+  )
+  return { sut, hasherStub, idBuilderStub, addUserRepoStub, accessTokenBuilderStub }
 }
 
 describe('AddRandomUser UseCase', () => {
@@ -115,9 +129,25 @@ describe('AddRandomUser UseCase', () => {
     await expect(promise).rejects.toThrow()
   })
 
-  it('Should return an Id if AddUserRepo is a success', async () => {
+  it('Should call AccessTokenBuilder with correct Id', async () => {
+    const { sut, accessTokenBuilderStub } = makeSut()
+    const performSpy = jest.spyOn(accessTokenBuilderStub, 'perform')
+    await sut.perform()
+    expect(performSpy).toHaveBeenCalledWith('any_id')
+  })
+
+  it('Should throw if AccessTokenBuilder throws', async () => {
+    const { sut, accessTokenBuilderStub } = makeSut()
+    jest.spyOn(accessTokenBuilderStub, 'perform').mockReturnValueOnce(
+      Promise.reject(new Error())
+    )
+    const promise = sut.perform()
+    await expect(promise).rejects.toThrow()
+  })
+
+  it('Should return AccessTokenModel if AccessTokenBuilder is a success', async () => {
     const { sut } = makeSut()
     const result = await sut.perform()
-    expect(result).toEqual({ id: 'any_id' })
+    expect(result).toEqual({ token: 'any_token' })
   })
 })
