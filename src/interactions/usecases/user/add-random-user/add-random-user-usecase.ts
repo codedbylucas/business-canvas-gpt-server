@@ -13,11 +13,14 @@ export class AddRandomUserUseCase implements AddRandomUser {
   ) {}
 
   async perform (): Promise<AccessTokenModel> {
-    const { hash: password } = await this.hasher.hashing('any_password')
-    const { id } = this.idBuilder.build()
-    const email = `${id}@convidado.com`
-    const date = new Date()
-    const createdAt = date; const updatedAt = date
+    const ids: string[] = []
+    for (let i = 0; i < 3; i++) {
+      ids.push(this.idBuilder.build().id)
+    }
+    const { hash: password } = await this.hasher.hashing(ids[0])
+    const email = `${ids[1]}@convidado.com`
+    const createdAt = new Date(); const updatedAt = createdAt
+    const id = ids[2]
     await this.addUserRepo.add({
       id, password, email, name: 'Convidado', createdAt, updatedAt, role: 'user'
     })
