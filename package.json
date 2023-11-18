@@ -1,5 +1,5 @@
 {
-  "name": "business-canvas-gpt-server",
+  "name": "bcm-api",
   "version": "1.0.0",
   "description": "Api Rest para gerar um Business Canvas a partir de respostas sobre o empreendimento do usuário. Utilizando TDD, DDD, Clean Architecture e TypeScript",
   "main": "server.ts",
