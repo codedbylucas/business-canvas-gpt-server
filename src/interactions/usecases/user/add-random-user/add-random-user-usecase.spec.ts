@@ -150,6 +150,6 @@ describe('AddRandomUser UseCase', () => {
   it('Should return AccessTokenModel if AccessTokenBuilder is a success', async () => {
     const { sut } = makeSut()
     const result = await sut.perform()
-    expect(result).toEqual({ token: 'any_token' })
+    expect(result).toEqual({ id: 'any_id_3', token: 'any_token' })
   })
 })
