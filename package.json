@@ -66,9 +66,9 @@
     "uuid": "^9.0.1"
   },
   "_moduleAliases": {
-    "@": "src"
+    "@": "dist"
   },
   "prisma": {
-    "schema": "./src/infra/db/prisma/schema/schema.prisma"
+    "schema": "./dist/infra/db/prisma/schema/schema.prisma"
   }
 }
