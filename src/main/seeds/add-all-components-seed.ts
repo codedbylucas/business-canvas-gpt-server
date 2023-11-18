@@ -3,7 +3,6 @@ import { PrismaHelper } from '@/infra/db/prisma/helpers/prisma-helper'
 import { addAllComponentsUseCaseFactory } from '../factories/usecases/component/add-all-components'
 
 export const addAllComponentsSeed = async (): Promise<void> => {
-  await PrismaHelper.connect()
   const prisma = await PrismaHelper.getCli()
   const components = await prisma.component.findMany()
   if (!components || components.length === 0) {
