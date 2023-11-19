@@ -1,14 +1,31 @@
-import type { FetchOneOfTheUserBusinessCanvasDto, FetchOneOfTheUserBusinessCanvas, FetchOneOfTheUserBusinessCanvasRes } from '@/domain/contracts'
+import type { FetchOneOfTheUserBusinessCanvasDto, FetchOneOfTheUserBusinessCanvas, FetchOneOfTheUserBusinessCanvasRes, BusinessCanvasOfTheUser } from '@/domain/contracts'
 import type { HttpRequest } from '@/presentation/http/http'
 import type { Validation } from '@/presentation/contracts'
 import { type Either, right, left } from '@/shared/either'
 import { FetchOneOfTheUserBusinessCanvasController } from './fetch-one-of-the-user-business-canvas-controller'
-import { badRequest, notFound, serverError } from '@/presentation/helpers/http/http-helpers'
+import { badRequest, notFound, ok, serverError } from '@/presentation/helpers/http/http-helpers'
 import { ServerError } from '@/presentation/errors'
 
 const makeFakeRequest = (): HttpRequest => ({
   headers: { userId: 'any_user_id' },
   params: { businessCanvasId: 'any_business_canvas_id' }
+})
+
+const makeFakeBusinessCanvasOfTheUser = (): BusinessCanvasOfTheUser => ({
+  id: 'any_business_canvas_id',
+  name: 'any_business_canvas_name',
+  createdAt: '10/12/2023',
+  components: {
+    customerSegments: ['any_customer_segments'],
+    valuePropositions: ['any_value_propositions'],
+    channels: ['any_channels'],
+    customerRelationships: ['any_customer_relationships'],
+    revenueStreams: ['any_revenue_streams'],
+    keyResources: ['any_key_resources'],
+    keyActivities: ['any_key_activities'],
+    keyPartnerships: ['any_key_partnerships'],
+    costStructure: ['any_cost_structure']
+  }
 })
 
 const makeValidation = (): Validation => {
@@ -23,7 +40,7 @@ const makeValidation = (): Validation => {
 const makeFetchOneOfTheUserBusinessCanvas = (): FetchOneOfTheUserBusinessCanvas => {
   class FetchOneOfTheUserBusinessCanvasStub implements FetchOneOfTheUserBusinessCanvas {
     async perform (dto: FetchOneOfTheUserBusinessCanvasDto): Promise<FetchOneOfTheUserBusinessCanvasRes> {
-      return await Promise.resolve(right('' as any))
+      return await Promise.resolve(right(makeFakeBusinessCanvasOfTheUser()))
     }
   }
   return new FetchOneOfTheUserBusinessCanvasStub()
@@ -101,5 +118,11 @@ describe('FetchOneOfTheUserBusinessCanvas Controller', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
     const error = new Error()
     expect(httpResponse).toEqual(serverError(new ServerError(error.stack)))
+  })
+
+  it('Should return 200 if FetchOneOfTheUserBusinessCanvas is a success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(ok(makeFakeBusinessCanvasOfTheUser()))
   })
 })
