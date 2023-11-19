@@ -1,5 +1,5 @@
 import type { Controller } from '@/presentation/contracts'
-import { FetchAllQuestionsController } from '@/presentation/controllers/question/fetch-all-questions-controller'
+import { FetchAllQuestionsController } from '@/presentation/controllers'
 import { fetchAllQuestionsUseCaseFactory } from '@/main/factories/usecases/question/fetch-all-questions-usecase-factory'
 
 export const fetchAllQuestionsControllerFactory = (): Controller => {
