@@ -9,7 +9,7 @@ datasource db {
 
 model Answer {
   id          String   @id(map: "PK_ANSWER") @unique(map: "UQ_ANSWER_ID") @db.VarChar(150)
-  description String?  @db.VarChar(750)
+  description String?  @db.VarChar(1500)
   createdAt   DateTime @map("created_at") @db.Timestamp(6)
 
   userId        String? @map("user_id") @db.VarChar(150)
@@ -25,7 +25,7 @@ model Answer {
 
 model BusinessCanvas {
   id        String   @id(map: "PK_BUSINESS_CANVAS") @unique(map: "UQ_BUSINESS_CANVAS_ID") @db.VarChar(150)
-  name      String   @db.VarChar(50)
+  name      String   @db.VarChar(250)
   createdAt DateTime @map("created_at") @db.Timestamp(6)
 
   userId String? @map("user_id") @db.VarChar(150)
@@ -39,7 +39,7 @@ model BusinessCanvas {
 model BusinessCanvasComponent {
   businessCanvasId String   @map("business_canvas_id") @db.VarChar(150)
   componentName    String   @map("component_name") @db.VarChar(150)
-  topics           String[] @db.VarChar(1000)
+  topics           String[] @db.VarChar(1500)
 
   BusinessCanvas BusinessCanvas? @relation(fields: [businessCanvasId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_BUSINESS_CANVAS_BUSINESS_CANVAS_COMPONENT")
   Component      Component?      @relation(fields: [componentName], references: [name], onDelete: Cascade, onUpdate: NoAction, map: "FK_COMPONENT_BUSINESS_CANVAS_COMPONENT")
@@ -60,7 +60,7 @@ model Component {
 
 model Question {
   id      String @id(map: "PK_QUESTION") @unique(map: "UQ_QUESTION_ID") @db.VarChar(150)
-  content String @db.VarChar(250)
+  content String @db.VarChar(300)
 
   Answer      Answer[]
   Alternative Alternative[]
@@ -70,7 +70,7 @@ model Question {
 
 model Alternative {
   id          String @id(map: "PK_ALTERNATIVE") @unique(map: "UQ_ALTERNATIVE_ID") @db.VarChar(150)
-  description String @db.VarChar(100)
+  description String @db.VarChar(200)
 
   questionId String @map("question_id") @db.VarChar(150)
 
@@ -83,7 +83,7 @@ model Alternative {
 model User {
   id        String   @id(map: "PK_USER") @unique(map: "UQ_USER_ID") @db.VarChar(150)
   email     String   @unique(map: "UQ_USER_EMAIL") @db.VarChar(150)
-  name      String   @db.VarChar(50)
+  name      String   @db.VarChar(100)
   password  String   @db.VarChar(200)
   role      Role
   createdAt DateTime @map("created_at") @db.Timestamp(6)
