@@ -31,7 +31,7 @@ const makeSut = (): SutTypes => {
   return { sut, fetchAllQuestionsStub }
 }
 
-describe('FetchAllQuestions UseCase', () => {
+describe('FetchAllQuestions Controller', () => {
   it('Should call FetchAllQuestions', async () => {
     const { sut, fetchAllQuestionsStub } = makeSut()
     const performSpy = jest.spyOn(fetchAllQuestionsStub, 'perform')
