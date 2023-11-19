@@ -96,6 +96,15 @@ describe('FetchOneOfTheUserBusinessCanvas UseCase', () => {
     expect(executeSpy).toHaveBeenCalledWith(new Date())
   })
 
+  it('Should throw if FormatDate throws', async () => {
+    const { sut } = makeSut()
+    jest.spyOn(FormatDate, 'execute').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const promise = sut.perform(makeFakeFetchOneOfTheUserBusinessCanvasDto())
+    await expect(promise).rejects.toThrow()
+  })
+
   it('Should return BusinessCanvasOfTheUser on success', async () => {
     const { sut } = makeSut()
     const result = await sut.perform(makeFakeFetchOneOfTheUserBusinessCanvasDto())
