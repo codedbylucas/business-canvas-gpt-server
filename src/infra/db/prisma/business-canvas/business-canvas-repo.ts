@@ -19,7 +19,7 @@ export class BusinessCanvasPrismaRepo implements AddBusinessCanvasRepo, FetchAll
     })
   }
 
-  async fetchByUserId (userId: string): Promise<UserBusinessCanvasSummaryRepo[]> {
+  async fetchAllByUserId (userId: string): Promise<UserBusinessCanvasSummaryRepo[]> {
     const prisma = await PrismaHelper.getCli()
     const businessCanvas = await prisma.businessCanvas.findMany({
       where: { userId },

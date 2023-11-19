@@ -9,7 +9,7 @@ export class FetchAllOfTheUserBusinessCanvasUseCase implements FetchAllOfTheUser
   constructor (private readonly fetchAllBusinessCanvasByUserIdRepo: FetchAllBusinessCanvasByUserIdRepo) {}
 
   async perform (userId: string): Promise<FetchAllOfTheUserBusinessCanvasRes> {
-    const businessCanvnas = await this.fetchAllBusinessCanvasByUserIdRepo.fetchByUserId(userId)
+    const businessCanvnas = await this.fetchAllBusinessCanvasByUserIdRepo.fetchAllByUserId(userId)
     if (businessCanvnas.length === 0) {
       return left(new NotAllBusinessCanvasError())
     }

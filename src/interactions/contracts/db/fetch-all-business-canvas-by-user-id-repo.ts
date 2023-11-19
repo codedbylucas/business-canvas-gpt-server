@@ -5,5 +5,5 @@ export interface UserBusinessCanvasSummaryRepo {
 }
 
 export interface FetchAllBusinessCanvasByUserIdRepo {
-  fetchByUserId: (userId: string) => Promise<UserBusinessCanvasSummaryRepo[]>
+  fetchAllByUserId: (userId: string) => Promise<UserBusinessCanvasSummaryRepo[]>
 }

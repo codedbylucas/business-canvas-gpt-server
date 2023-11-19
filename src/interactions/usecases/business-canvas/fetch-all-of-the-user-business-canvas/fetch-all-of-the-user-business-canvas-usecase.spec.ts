@@ -22,7 +22,7 @@ const makeFakeUserBusinessCanvasSummaryListRepo = (): UserBusinessCanvasSummaryR
 
 const makeFetchAllBusinessCanvasByUserIdRepo = (): FetchAllBusinessCanvasByUserIdRepo => {
   class FetchAllBusinessCanvasByUserIdRepoStub implements FetchAllBusinessCanvasByUserIdRepo {
-    async fetchByUserId (userId: string): Promise<UserBusinessCanvasSummaryRepo[]> {
+    async fetchAllByUserId (userId: string): Promise<UserBusinessCanvasSummaryRepo[]> {
       return await Promise.resolve(makeFakeUserBusinessCanvasSummaryListRepo())
     }
   }
@@ -51,14 +51,14 @@ describe('FetchAllOfTheUserBusinessCanvas UseCase', () => {
 
   it('Should call FetchAllBusinessCanvasByUserIdRepo with correct user id', async () => {
     const { sut, fetchAllBusinessCanvasByUserIdRepoStub } = makeSut()
-    const fetchByUserIdSpy = jest.spyOn(fetchAllBusinessCanvasByUserIdRepoStub, 'fetchByUserId')
+    const fetchAllByUserIdSpy = jest.spyOn(fetchAllBusinessCanvasByUserIdRepoStub, 'fetchAllByUserId')
     await sut.perform('any_user_id')
-    expect(fetchByUserIdSpy).toHaveBeenCalledWith('any_user_id')
+    expect(fetchAllByUserIdSpy).toHaveBeenCalledWith('any_user_id')
   })
 
   it('Should return NotAllBusinessCanvasError if FetchAllBusinessCanvasByUserIdRepo returns empty list', async () => {
     const { sut, fetchAllBusinessCanvasByUserIdRepoStub } = makeSut()
-    jest.spyOn(fetchAllBusinessCanvasByUserIdRepoStub, 'fetchByUserId').mockReturnValueOnce(
+    jest.spyOn(fetchAllBusinessCanvasByUserIdRepoStub, 'fetchAllByUserId').mockReturnValueOnce(
       Promise.resolve([])
     )
     const result = await sut.perform('any_user_id')
@@ -67,7 +67,7 @@ describe('FetchAllOfTheUserBusinessCanvas UseCase', () => {
 
   it('Should throw if FetchAllBusinessCanvasByUserIdRepo throws', async () => {
     const { sut, fetchAllBusinessCanvasByUserIdRepoStub } = makeSut()
-    jest.spyOn(fetchAllBusinessCanvasByUserIdRepoStub, 'fetchByUserId').mockReturnValueOnce(
+    jest.spyOn(fetchAllBusinessCanvasByUserIdRepoStub, 'fetchAllByUserId').mockReturnValueOnce(
       Promise.reject(new Error())
     )
     const promise = sut.perform('any_user_id')
