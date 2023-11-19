@@ -3,6 +3,14 @@ import type { BusinessCanvasModel } from '@/domain/models/db-models'
 import type { FetchOneOfTheUserBusinessCanvasRepo } from '@/interactions/contracts/db'
 import { BusinessCanvasNotFoundError } from '@/domain/errors'
 import { FetchOneOfTheUserBusinessCanvasUseCase } from './fetch-one-of-the-user-business-canvas-usecase'
+import { FormatDate } from '@/domain/processes/format-date/format-date'
+import MockDate from 'mockdate'
+
+jest.mock('@/domain/processes/format-date/format-date', () => ({
+  FormatDate: {
+    execute: jest.fn(() => (`${10}/${12}/${2023}`))
+  }
+}))
 
 const makeFakeFetchOneOfTheUserBusinessCanvasDto = (): FetchOneOfTheUserBusinessCanvasDto => ({
   userId: 'any_user_id',
@@ -48,6 +56,14 @@ const makeSut = (): SutTypes => {
 }
 
 describe('FetchOneOfTheUserBusinessCanvas UseCase', () => {
+  beforeAll(() => {
+    MockDate.set(new Date('2023-12-10T00:00:00'))
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
   it('Should call FetchOneOfTheUserBusinessCanvasRepo with correct user id', async () => {
     const { sut, fetchOneOfTheUserBusinessCanvasRepoStub } = makeSut()
     const fetchAllByUserIdSpy = jest.spyOn(fetchOneOfTheUserBusinessCanvasRepoStub, 'fetchOneOfTheUser')
@@ -71,5 +87,20 @@ describe('FetchOneOfTheUserBusinessCanvas UseCase', () => {
     )
     const promise = sut.perform(makeFakeFetchOneOfTheUserBusinessCanvasDto())
     await expect(promise).rejects.toThrow()
+  })
+
+  it('Should call FormatDate with correct dates', async () => {
+    const { sut } = makeSut()
+    const executeSpy = jest.spyOn(FormatDate, 'execute')
+    await sut.perform(makeFakeFetchOneOfTheUserBusinessCanvasDto())
+    expect(executeSpy).toHaveBeenCalledWith(new Date())
+  })
+
+  it('Should return BusinessCanvasOfTheUser on success', async () => {
+    const { sut } = makeSut()
+    const result = await sut.perform(makeFakeFetchOneOfTheUserBusinessCanvasDto())
+    const { createdAt, userId, ...remainingData } = makeFakeBusinessCanvasModel()
+    const businessCanvasOfTheUser = { createdAt: '10/12/2023', ...remainingData }
+    expect(result.value).toEqual(businessCanvasOfTheUser)
   })
 })
