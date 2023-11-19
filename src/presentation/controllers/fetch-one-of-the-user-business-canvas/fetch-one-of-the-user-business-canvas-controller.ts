@@ -1,7 +1,7 @@
 import type { Controller, Validation } from '@/presentation/contracts'
 import type { HttpRequest, HttpResponse } from '@/presentation/http/http'
 import type { FetchOneOfTheUserBusinessCanvas } from '@/domain/contracts'
-import { badRequest, notFound, serverError } from '@/presentation/helpers/http/http-helpers'
+import { badRequest, notFound, ok, serverError } from '@/presentation/helpers/http/http-helpers'
 
 export class FetchOneOfTheUserBusinessCanvasController implements Controller {
   constructor (
@@ -22,7 +22,7 @@ export class FetchOneOfTheUserBusinessCanvasController implements Controller {
       if (businessCanvasResult.isLeft()) {
         return notFound(businessCanvasResult.value)
       }
-      return { statusCode: 0, body: '' }
+      return ok(businessCanvasResult.value)
     } catch (error: any) {
       return serverError(error)
     }
