@@ -71,7 +71,7 @@ describe('FetchOneOfTheUserBusinessCanvas UseCase', () => {
     expect(fetchAllByUserIdSpy).toHaveBeenCalledWith(makeFakeFetchOneOfTheUserBusinessCanvasDto())
   })
 
-  it('Should return NotAllBusinessCanvasError if FetchOneOfTheUserBusinessCanvasRepo returns empty list', async () => {
+  it('Should return BusinessCanvasNotFoundError if FetchOneOfTheUserBusinessCanvasRepo returns null', async () => {
     const { sut, fetchOneOfTheUserBusinessCanvasRepoStub } = makeSut()
     jest.spyOn(fetchOneOfTheUserBusinessCanvasRepoStub, 'fetchOneOfTheUser').mockReturnValueOnce(
       Promise.resolve(null)
