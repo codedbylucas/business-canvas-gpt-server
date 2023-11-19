@@ -1,6 +1,6 @@
 import type { FetchAllBusinessCanvasByUserIdRepo, UserBusinessCanvasSummaryRepo } from '@/interactions/contracts/db'
 import { FetchAllOfTheUserBusinessCanvasUseCase } from './fetch-all-of-the-user-business-canvas-usecase'
-import { NotAllBusinessCanvasError } from '@/domain/errors'
+import { BusinessCanvasesWereNotFoundError } from '@/domain/errors'
 import { FormatDate } from '@/domain/processes/format-date/format-date'
 import MockDate from 'mockdate'
 
@@ -56,13 +56,13 @@ describe('FetchAllOfTheUserBusinessCanvas UseCase', () => {
     expect(fetchAllByUserIdSpy).toHaveBeenCalledWith('any_user_id')
   })
 
-  it('Should return NotAllBusinessCanvasError if FetchAllBusinessCanvasByUserIdRepo returns empty list', async () => {
+  it('Should return BusinessCanvasesWereNotFoundError if FetchAllBusinessCanvasByUserIdRepo returns empty list', async () => {
     const { sut, fetchAllBusinessCanvasByUserIdRepoStub } = makeSut()
     jest.spyOn(fetchAllBusinessCanvasByUserIdRepoStub, 'fetchAllByUserId').mockReturnValueOnce(
       Promise.resolve([])
     )
     const result = await sut.perform('any_user_id')
-    expect(result.value).toEqual(new NotAllBusinessCanvasError())
+    expect(result.value).toEqual(new BusinessCanvasesWereNotFoundError())
   })
 
   it('Should throw if FetchAllBusinessCanvasByUserIdRepo throws', async () => {

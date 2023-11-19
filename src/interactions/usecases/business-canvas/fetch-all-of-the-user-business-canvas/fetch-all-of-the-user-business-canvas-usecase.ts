@@ -1,7 +1,7 @@
 import type { FetchAllOfTheUserBusinessCanvas, FetchAllOfTheUserBusinessCanvasRes } from '@/domain/contracts'
 import type { UserBusinessCanvasSummary } from '@/domain/models/output-models'
 import type { FetchAllBusinessCanvasByUserIdRepo } from '@/interactions/contracts/db'
-import { NotAllBusinessCanvasError } from '@/domain/errors'
+import { BusinessCanvasesWereNotFoundError } from '@/domain/errors'
 import { FormatDate } from '@/domain/processes/format-date/format-date'
 import { left, right } from '@/shared/either'
 
@@ -11,7 +11,7 @@ export class FetchAllOfTheUserBusinessCanvasUseCase implements FetchAllOfTheUser
   async perform (userId: string): Promise<FetchAllOfTheUserBusinessCanvasRes> {
     const businessCanvnas = await this.fetchAllBusinessCanvasByUserIdRepo.fetchAllByUserId(userId)
     if (businessCanvnas.length === 0) {
-      return left(new NotAllBusinessCanvasError())
+      return left(new BusinessCanvasesWereNotFoundError())
     }
     const canvasOfTheUser: UserBusinessCanvasSummary[] = businessCanvnas.map(
       canvas => ({
