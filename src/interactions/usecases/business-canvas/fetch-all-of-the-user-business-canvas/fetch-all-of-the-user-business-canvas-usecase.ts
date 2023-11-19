@@ -19,6 +19,6 @@ export class FetchAllOfTheUserBusinessCanvasUseCase implements FetchAllOfTheUser
         name: canvas.name,
         createdAt: FormatDate.execute(canvas.createdAt)
       }))
-    return right([])
+    return right(canvasOfTheUser)
   }
 }
