@@ -89,6 +89,15 @@ describe('FetchAllOfTheUserBusinessCanvas UseCase', () => {
     expect(executeSpy).toHaveBeenCalledTimes(2)
   })
 
+  it('Should throw if FormatDate throws', async () => {
+    const { sut } = makeSut()
+    jest.spyOn(FormatDate, 'execute').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const promise = sut.perform('any_user_id')
+    await expect(promise).rejects.toThrow()
+  })
+
   it('Should return UserBusinessCanvasSummary list on success', async () => {
     const { sut } = makeSut()
     const result = await sut.perform('any_user_id')
