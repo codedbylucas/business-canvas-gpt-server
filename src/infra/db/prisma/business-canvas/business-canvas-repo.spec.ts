@@ -200,5 +200,30 @@ describe('BusinessCanvasPrisma Repo', () => {
       })
       expect(businessCanvasOfTheUser).toEqual(makeFakeBusinessCanvasModel())
     })
+
+    it('Should return null if userId is invalid', async () => {
+      const sut = new BusinessCanvasPrismaRepo()
+      await prismock.user.create({ data: makeFakeUserModel() })
+      await prismock.component.createMany({ data: makeFakeComponentModels() })
+      await prismock.businessCanvas.create({
+        data: {
+          id: 'any_business_canvas_id',
+          name: 'any_business_canvas_name',
+          createdAt,
+          userId: 'any_user_id'
+        }
+      })
+      const componentEntries = Object.entries(makeFakeBusinessCanvasModel().components)
+      await prismock.businessCanvasComponent.createMany({
+        data: componentEntries.map(([componentName, topics]) => ({
+          businessCanvasId: 'any_business_canvas_id', componentName, topics
+        }))
+      })
+      const businessCanvasOfTheUser = await sut.fetchOneOfTheUser({
+        userId: 'invalid_user_id',
+        businessCanvasId: 'any_business_canvas_id'
+      })
+      expect(businessCanvasOfTheUser).toBe(null)
+    })
   })
 })
