@@ -166,5 +166,12 @@ describe('BusinessCanvasPrisma Repo', () => {
         createdAt
       }])
     })
+
+    it('Should return empty list if not found business canvas', async () => {
+      const sut = new BusinessCanvasPrismaRepo()
+      await prismock.user.create({ data: makeFakeUserModel() })
+      const businessCanvasOfTheUser = await sut.fetchByUserId('any_user_id')
+      expect(businessCanvasOfTheUser.length).toBe(0)
+    })
   })
 })
