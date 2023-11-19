@@ -15,8 +15,8 @@ export default async (router: Router): Promise<void> => {
     adaptRoute(createBusinessCanvasControllerFactory())
   )
 
-  router.get('/business-canvas', (
+  router.get('/business-canvas',
     adaptMiddleware(accessControlMiddlewareFactory('user')),
     adaptRoute(fetchAllOfTheUserBusinessCanvasControllerFactory())
-  ))
+  )
 }
