@@ -16,31 +16,30 @@ O cabeçalho da requisição deve conter o token de autenticação do usuário p
 
 ## Caso de sucesso
 
-- ❌ Valida o token de autenticação do usuário.
-- ❌ Busca todos os Business Canvas do usuário.
+- ✅ Valida o token de autenticação do usuário.
+- ✅ Busca todos os Business Canvas do usuário.
 
 ### Resposta
 
-- ❌ Código de status: **200 OK**
-- ❌ Corpo da resposta: Um objeto JSON contendo os Business Canvas do usuário.
+- ✅ Código de status: **200 OK**
+- ✅ Corpo da resposta: Um objeto JSON contendo os Business Canvas do usuário.
 
 Exemplo:
 
 ```json
-{
-  "businessCanvas": [
-    {
-      "id": "123",
-      "name": "Barbearia em São Paulo",
-      "createdAt": "2023-11-06"
-    },
-    {
-      "id": "124",
-      "name": "Loja Virtual de Roupas",
-      "createdAt": "2023-11-07"
-    }
-  ]
-}
+ [
+  {
+    "id": "123",
+    "name": "Barbearia em São Paulo",
+    "createdAt": "19/11/2023"
+  },
+  {
+    "id": "124",
+    "name": "Loja Virtual de Roupas",
+    "createdAt": "10/01/2023"
+  }
+]
+
 ```
 
 - **id** (string): O ID único do Business Canvas.
@@ -53,10 +52,10 @@ Exemplo:
 ### Respostas
 
 - Código de status: **401 Unauthorized**
-  - ❌ Se o cabeçalho de autorização estiver ausente ou inválido.
-  - ❌ Se o token de autenticação for inválido ou expirado.
-  - ❌ Se o usuário não estiver autenticado na plataforma.
+  - ✅ Se o cabeçalho de autorização estiver ausente ou inválido.
+  - ✅ Se o token de autenticação for inválido ou expirado.
+  - ✅ Se o usuário não estiver autenticado na plataforma.
 - Código de status: **404 Not Found**
-  - ❌ Se não encontrar nenhum Business Canvas do usuário.
+  - ✅ Se não encontrar nenhum Business Canvas do usuário.
 - Código de status: **500 Internal Server Error**
-  - ❌ Em caso de erro interno no servidor.
+  - ✅ Em caso de erro interno no servidor.
