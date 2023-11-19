@@ -2,6 +2,7 @@ import type { FetchOneOfTheUserBusinessCanvas, FetchOneOfTheUserBusinessCanvasDt
 import type { FetchOneOfTheUserBusinessCanvasRepo } from '@/interactions/contracts/db'
 import { BusinessCanvasNotFoundError } from '@/domain/errors'
 import { left, right } from '@/shared/either'
+import { FormatDate } from '@/domain/processes/format-date/format-date'
 
 export class FetchOneOfTheUserBusinessCanvasUseCase implements FetchOneOfTheUserBusinessCanvas {
   constructor (private readonly fetchOneOfTheUserBusinessCanvasRepo: FetchOneOfTheUserBusinessCanvasRepo) {}
@@ -11,7 +12,8 @@ export class FetchOneOfTheUserBusinessCanvasUseCase implements FetchOneOfTheUser
     if (!businessCanvnas) {
       return left(new BusinessCanvasNotFoundError(dto.businessCanvasId))
     }
-    const t = '' as any
-    return right(t)
+    const createdAt = FormatDate.execute(businessCanvnas.createdAt)
+    const { userId, createdAt: date, ...remainingData } = businessCanvnas
+    return right({ ...remainingData, createdAt })
   }
 }
