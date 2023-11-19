@@ -1,6 +1,6 @@
 import type { Router } from 'express'
 import { adaptMiddleware, adaptRoute } from '@/main/adapters'
-import { createBusinessCanvasControllerFactory, fetchAllOfTheUserBusinessCanvasControllerFactory } from '@/main/factories/controllers/business-canvas'
+import { createBusinessCanvasControllerFactory, fetchAllOfTheUserBusinessCanvasControllerFactory, fetchOneOfTheUserBusinessCanvasControllerFactory } from '@/main/factories/controllers/business-canvas'
 import { accessTokenVerifierMiddlewareDecoratorFactory } from '@/main/factories/decorators/access-token-verifier-middleware-decorator'
 import { accessControlMiddlewareFactory } from '@/main/factories/middlewares/access-control-middleware-factory'
 
@@ -17,5 +17,10 @@ export default async (router: Router): Promise<void> => {
   router.get('/business-canvas',
     adaptMiddleware(accessControlMiddlewareFactory('user')),
     adaptRoute(fetchAllOfTheUserBusinessCanvasControllerFactory())
+  )
+
+  router.get('/business-canvas/:businessCanvasId',
+    adaptMiddleware(accessControlMiddlewareFactory('user')),
+    adaptRoute(fetchOneOfTheUserBusinessCanvasControllerFactory())
   )
 }
