@@ -1,7 +1,7 @@
 import type { FetchAllOfTheUserBusinessCanvas, FetchAllOfTheUserBusinessCanvasRes } from '@/domain/contracts'
 import type { UserBusinessCanvasSummary } from '@/domain/models/output-models'
 import type { HttpRequest } from '@/presentation/http/http'
-import { notFound, serverError } from '@/presentation/helpers/http/http-helpers'
+import { notFound, ok, serverError } from '@/presentation/helpers/http/http-helpers'
 import { left, right } from '@/shared/either'
 import { FetchAllOfTheUserBusinessCanvasController } from './fetch-all-of-the-user-business-canvas-controller'
 import { ServerError } from '@/presentation/errors'
@@ -67,5 +67,11 @@ describe('FetchAllOfTheUserBusinessCanvas Controller', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
     const error = new Error()
     expect(httpResponse).toEqual(serverError(new ServerError(error.stack)))
+  })
+
+  it('Should return 200 if FetchAllOfTheUserBusinessCanvas is a success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(ok(makeFakeUserBusinessCanvasSummaryList()))
   })
 })
