@@ -1,16 +1,20 @@
-import type { Controller, Validation } from '@/presentation/contracts'
-import { badRequest, serverError } from '@/presentation/helpers/http/http-helpers'
+import type { FetchAllOfTheUserBusinessCanvas } from '@/domain/contracts'
+import type { Controller } from '@/presentation/contracts'
 import type { HttpRequest, HttpResponse } from '@/presentation/http/http'
+import { notFound, serverError } from '@/presentation/helpers/http/http-helpers'
 
 export class FetchAllOfTheUserBusinessCanvasController implements Controller {
   constructor (
-    private readonly validation: Validation) {}
+    private readonly fetchAllOfTheUserBusinessCanvas: FetchAllOfTheUserBusinessCanvas
+  ) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const validationResult = this.validation.validate(httpRequest.body)
-      if (validationResult.isLeft()) {
-        return badRequest(validationResult.value)
+      const result = await this.fetchAllOfTheUserBusinessCanvas.perform(
+        httpRequest.headers?.userId
+      )
+      if (result.isLeft()) {
+        return notFound(result.value)
       }
       return { statusCode: 2, body: '' }
     } catch (error: any) {
