@@ -13,7 +13,7 @@ export class FetchOneOfTheUserBusinessCanvasUseCase implements FetchOneOfTheUser
       return left(new BusinessCanvasNotFoundError(dto.businessCanvasId))
     }
     const createdAt = FormatDate.execute(businessCanvnas.createdAt)
-    const { userId, createdAt: date, ...remainingData } = businessCanvnas
-    return right({ ...remainingData, createdAt })
+    const { id, name, components } = businessCanvnas
+    return right({ id, name, createdAt, ...components })
   }
 }

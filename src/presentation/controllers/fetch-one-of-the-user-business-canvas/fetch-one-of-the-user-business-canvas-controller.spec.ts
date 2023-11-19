@@ -15,17 +15,15 @@ const makeFakeBusinessCanvasOfTheUser = (): BusinessCanvasOfTheUser => ({
   id: 'any_business_canvas_id',
   name: 'any_business_canvas_name',
   createdAt: '10/12/2023',
-  components: {
-    customerSegments: ['any_customer_segments'],
-    valuePropositions: ['any_value_propositions'],
-    channels: ['any_channels'],
-    customerRelationships: ['any_customer_relationships'],
-    revenueStreams: ['any_revenue_streams'],
-    keyResources: ['any_key_resources'],
-    keyActivities: ['any_key_activities'],
-    keyPartnerships: ['any_key_partnerships'],
-    costStructure: ['any_cost_structure']
-  }
+  customerSegments: ['any_customer_segments'],
+  valuePropositions: ['any_value_propositions'],
+  channels: ['any_channels'],
+  customerRelationships: ['any_customer_relationships'],
+  revenueStreams: ['any_revenue_streams'],
+  keyResources: ['any_key_resources'],
+  keyActivities: ['any_key_activities'],
+  keyPartnerships: ['any_key_partnerships'],
+  costStructure: ['any_cost_structure']
 })
 
 const makeValidation = (): Validation => {

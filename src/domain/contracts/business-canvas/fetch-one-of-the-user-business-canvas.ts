@@ -1,5 +1,5 @@
-import type { ComponentName } from '@/domain/entities/component'
 import type { BusinessCanvasNotFoundError } from '@/domain/errors'
+import type { BusinessCanvasApiModel } from '@/domain/models/output-models'
 import type { Either } from '@/shared/either'
 
 export interface FetchOneOfTheUserBusinessCanvasDto {
@@ -7,11 +7,9 @@ export interface FetchOneOfTheUserBusinessCanvasDto {
   businessCanvasId: string
 }
 
-export interface BusinessCanvasOfTheUser {
+export interface BusinessCanvasOfTheUser extends BusinessCanvasApiModel {
   id: string
-  name: string
   createdAt: string
-  components: Record<ComponentName, string[]>
 }
 
 export type FetchOneOfTheUserBusinessCanvasRes = Either<BusinessCanvasNotFoundError, BusinessCanvasOfTheUser>

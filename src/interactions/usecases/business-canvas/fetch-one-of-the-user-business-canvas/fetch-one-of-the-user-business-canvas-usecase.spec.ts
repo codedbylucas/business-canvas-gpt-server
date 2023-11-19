@@ -108,8 +108,8 @@ describe('FetchOneOfTheUserBusinessCanvas UseCase', () => {
   it('Should return BusinessCanvasOfTheUser on success', async () => {
     const { sut } = makeSut()
     const result = await sut.perform(makeFakeFetchOneOfTheUserBusinessCanvasDto())
-    const { createdAt, userId, ...remainingData } = makeFakeBusinessCanvasModel()
-    const businessCanvasOfTheUser = { createdAt: '10/12/2023', ...remainingData }
+    const { id, name, components } = makeFakeBusinessCanvasModel()
+    const businessCanvasOfTheUser = { createdAt: '10/12/2023', id, name, ...components }
     expect(result.value).toEqual(businessCanvasOfTheUser)
   })
 })
