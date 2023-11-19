@@ -1,59 +1,71 @@
-import type { Validation } from '@/presentation/contracts'
+import type { FetchAllOfTheUserBusinessCanvas, FetchAllOfTheUserBusinessCanvasRes } from '@/domain/contracts'
+import type { UserBusinessCanvasSummary } from '@/domain/models/output-models'
 import type { HttpRequest } from '@/presentation/http/http'
-import { ServerError } from '@/presentation/errors'
-import { badRequest, serverError } from '@/presentation/helpers/http/http-helpers'
-import { left, right, type Either } from '@/shared/either'
+import { notFound, serverError } from '@/presentation/helpers/http/http-helpers'
+import { left, right } from '@/shared/either'
 import { FetchAllOfTheUserBusinessCanvasController } from './fetch-all-of-the-user-business-canvas-controller'
+import { ServerError } from '@/presentation/errors'
 
 const makeFakeRequest = (): HttpRequest => ({
   headers: { userId: 'any_user_id' }
 })
 
-const makeValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate (input: any): Either<Error, null> {
-      return right(null)
+const makeFakeUserBusinessCanvasSummaryList = (): UserBusinessCanvasSummary[] => [{
+  id: 'any_business_canvas_id',
+  name: 'any_business_canvas_name',
+  createdAt: '10/12/2023'
+}, {
+  id: 'other_business_canvas_id',
+  name: 'other_business_canvas_name',
+  createdAt: '10/12/2023'
+}]
+
+const makeFetchAllOfTheUserBusinessCanvas = (): FetchAllOfTheUserBusinessCanvas => {
+  class FetchAllOfTheUserBusinessCanvasStub implements FetchAllOfTheUserBusinessCanvas {
+    async perform (userId: string): Promise<FetchAllOfTheUserBusinessCanvasRes> {
+      return await Promise.resolve(right(makeFakeUserBusinessCanvasSummaryList()))
     }
   }
-  return new ValidationStub()
+  return new FetchAllOfTheUserBusinessCanvasStub()
 }
 
 interface SutTypes {
   sut: FetchAllOfTheUserBusinessCanvasController
-  validationStub: Validation
+  fetchAllOfTheUserBusinessCanvasStub: FetchAllOfTheUserBusinessCanvas
 }
 
 const makeSut = (): SutTypes => {
-  const validationStub = makeValidation()
-  const sut = new FetchAllOfTheUserBusinessCanvasController(validationStub)
-  return { sut, validationStub }
+  const fetchAllOfTheUserBusinessCanvasStub = makeFetchAllOfTheUserBusinessCanvas()
+  const sut = new FetchAllOfTheUserBusinessCanvasController(
+    fetchAllOfTheUserBusinessCanvasStub
+  )
+  return { sut, fetchAllOfTheUserBusinessCanvasStub }
 }
 
 describe('FetchAllOfTheUserBusinessCanvas Controller', () => {
-  it('Should call Validation with correct values', async () => {
-    const { sut, validationStub } = makeSut()
-    const validateSpy = jest.spyOn(validationStub, 'validate')
+  it('Should call FetchAllOfTheUserBusinessCanvas with correct values', async () => {
+    const { sut, fetchAllOfTheUserBusinessCanvasStub } = makeSut()
+    const performSpy = jest.spyOn(fetchAllOfTheUserBusinessCanvasStub, 'perform')
     await sut.handle(makeFakeRequest())
-    expect(validateSpy).toHaveBeenCalledWith(makeFakeRequest().body)
+    expect(performSpy).toHaveBeenCalledWith('any_user_id')
   })
 
-  it('Should return 400 if Validation fails', async () => {
-    const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(
-      left(new Error('any_message'))
+  it('Should return 404 if FetchAllOfTheUserBusinessCanvas not found business canvas', async () => {
+    const { sut, fetchAllOfTheUserBusinessCanvasStub } = makeSut()
+    jest.spyOn(fetchAllOfTheUserBusinessCanvasStub, 'perform').mockReturnValueOnce(
+      Promise.resolve(left(new Error('any_message')))
     )
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(badRequest(new Error('any_message')))
+    expect(httpResponse).toEqual(notFound(new Error('any_message')))
   })
 
-  it('Should return 500 if Validation throws', async () => {
-    const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => {
+  it('Should return 500 if FetchAllOfTheUserBusinessCanvas throws', async () => {
+    const { sut, fetchAllOfTheUserBusinessCanvasStub } = makeSut()
+    jest.spyOn(fetchAllOfTheUserBusinessCanvasStub, 'perform').mockImplementationOnce(() => {
       throw new Error()
     })
     const httpResponse = await sut.handle(makeFakeRequest())
     const error = new Error()
-    error.stack = 'any_stack'
     expect(httpResponse).toEqual(serverError(new ServerError(error.stack)))
   })
 })
