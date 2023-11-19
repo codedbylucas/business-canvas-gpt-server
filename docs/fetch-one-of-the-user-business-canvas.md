@@ -20,18 +20,21 @@ O cabeçalho da requisição deve conter o token de autenticação do usuário p
 
 ## Caso de sucesso
 
-- ❌ Valida o token de autenticação do usuário.
-- ❌ Busca no DB as informações do Business Canvas pelo ID do usuário e o ID do Business Canvas.
+- ✅ Valida o token de autenticação do usuário.
+- ✅ Busca no DB as informações do Business Canvas pelo ID do usuário e o ID do Business Canvas.
 
 ### Resposta
 
-- ❌ Código de status: **200 OK**
-- ❌ Corpo da resposta: Um objeto JSON contendo as informações detalhadas do Business Canvas.
+- ✅ Código de status: **200 OK**
+- ✅ Corpo da resposta: Um objeto JSON contendo as informações detalhadas do Business Canvas.
 
 Exemplo:
 
 ```json
 {
+  "id": "123",
+  "name": "Barbearia em São Paulo",
+  "createdAt": "19/11/2023",
   "customerSegments": [
     "Respostas 1.",
     "Respostas 2."
@@ -72,12 +75,12 @@ Exemplo:
 
 ### Respostas
 - Código de status: **400 Bad Request**
-  - ❌ Se o ID do Business Canvas informado não for um UUID.
+  - ✅ Se o ID do Business Canvas informado não for um UUID.
 - Código de status: **401 Unauthorized**
-  - ❌ Se o cabeçalho de autorização estiver ausente ou inválido.
-  - ❌ Se o token de autenticação for inválido ou expirado.
-  - ❌ Se o usuário não estiver autenticado na plataforma.
+  - ✅ Se o cabeçalho de autorização estiver ausente ou inválido.
+  - ✅ Se o token de autenticação for inválido ou expirado.
+  - ✅ Se o usuário não estiver autenticado na plataforma.
 - Código de status: **404 Not Found**
-  - ❌ Se o Business Canvas com o ID especificado não for encontrado.
+  - ✅ Se o Business Canvas com o ID especificado não for encontrado.
 - Código de status: **500 Internal Server Error**
-  - ❌ Em caso de erro interno no servidor.
+  - ✅ Em caso de erro interno no servidor.
