@@ -1,8 +1,8 @@
 import type { BusinessCanvasModel } from '@/domain/models/db-models'
-import type { AddBusinessCanvasRepo } from '@/interactions/contracts/db'
+import type { AddBusinessCanvasRepo, FetchAllBusinessCanvasByUserIdRepo, UserBusinessCanvasSummaryRepo } from '@/interactions/contracts/db'
 import { PrismaHelper } from '../helpers/prisma-helper'
 
-export class BusinessCanvasPrismaRepo implements AddBusinessCanvasRepo {
+export class BusinessCanvasPrismaRepo implements AddBusinessCanvasRepo, FetchAllBusinessCanvasByUserIdRepo {
   async add (dto: BusinessCanvasModel): Promise<void> {
     const { components, createdAt, id, name, userId } = dto
     const prisma = await PrismaHelper.getCli()
@@ -17,5 +17,14 @@ export class BusinessCanvasPrismaRepo implements AddBusinessCanvasRepo {
         }))
       })
     })
+  }
+
+  async fetchByUserId (userId: string): Promise<UserBusinessCanvasSummaryRepo[]> {
+    const prisma = await PrismaHelper.getCli()
+    const businessCanvas = await prisma.businessCanvas.findMany({
+      where: { userId },
+      select: { id: true, createdAt: true, name: true }
+    })
+    return businessCanvas
   }
 }
