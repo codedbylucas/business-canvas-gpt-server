@@ -29,25 +29,23 @@ const makeFakeComponentModels = (): ComponentModel[] => ([
   { id: 'any_id_9', name: 'costStructure' }
 ])
 
-const makeFakeBusinessCanvasModel = (): BusinessCanvasModel => {
-  return {
-    id: 'any_id',
-    name: 'any_business_canvas_name',
-    createdAt,
-    userId: 'any_user_id',
-    components: {
-      customerSegments: ['any_customer_segments'],
-      valuePropositions: ['any_value_propositions'],
-      channels: ['any_channels'],
-      customerRelationships: ['any_customer_relationships'],
-      revenueStreams: ['any_revenue_streams'],
-      keyResources: ['any_key_resources'],
-      keyActivities: ['any_key_activities'],
-      keyPartnerships: ['any_key_partnerships'],
-      costStructure: ['any_cost_structure']
-    }
+const makeFakeBusinessCanvasModel = (): BusinessCanvasModel => ({
+  id: 'any_id',
+  name: 'any_business_canvas_name',
+  createdAt,
+  userId: 'any_user_id',
+  components: {
+    customerSegments: ['any_customer_segments'],
+    valuePropositions: ['any_value_propositions'],
+    channels: ['any_channels'],
+    customerRelationships: ['any_customer_relationships'],
+    revenueStreams: ['any_revenue_streams'],
+    keyResources: ['any_key_resources'],
+    keyActivities: ['any_key_activities'],
+    keyPartnerships: ['any_key_partnerships'],
+    costStructure: ['any_cost_structure']
   }
-}
+})
 
 interface FakeBusinessCanvasType {
   id: string
@@ -103,40 +101,70 @@ describe('BusinessCanvasPrisma Repo', () => {
     await prismock.$disconnect()
   })
 
-  it('Should add BusinessCanvas to an User on success', async () => {
-    await prismock.user.create({ data: makeFakeUserModel() })
-    await prismock.component.createMany({ data: makeFakeComponentModels() })
-    const sut = new BusinessCanvasPrismaRepo()
-    await sut.add(makeFakeBusinessCanvasModel())
-    const businessCanvas = await prismock.businessCanvas.findUnique({
-      where: { id: 'any_id' }
+  describe('add()', () => {
+    it('Should add BusinessCanvas to an User on success', async () => {
+      await prismock.user.create({ data: makeFakeUserModel() })
+      await prismock.component.createMany({ data: makeFakeComponentModels() })
+      const sut = new BusinessCanvasPrismaRepo()
+      await sut.add(makeFakeBusinessCanvasModel())
+      const businessCanvas = await prismock.businessCanvas.findUnique({
+        where: { id: 'any_id' }
+      })
+      expect(businessCanvas).toEqual(makeFakeBusinessCanvas())
     })
-    expect(businessCanvas).toEqual(makeFakeBusinessCanvas())
+
+    it('Should relate the BusinessCanvas to the User', async () => {
+      await prismock.user.create({ data: makeFakeUserModel() })
+      await prismock.component.createMany({ data: makeFakeComponentModels() })
+      const sut = new BusinessCanvasPrismaRepo()
+      await sut.add(makeFakeBusinessCanvasModel())
+      const businessCanvas = await prismock.user.findUnique({
+        where: { id: 'any_user_id' },
+        select: { BusinessCanvas: true }
+      })
+      expect(businessCanvas).toEqual({ BusinessCanvas: [makeFakeBusinessCanvas()] })
+    })
+
+    it('Should relate the BusinessCanvas to the Components', async () => {
+      await prismock.user.create({ data: makeFakeUserModel() })
+      await prismock.component.createMany({ data: makeFakeComponentModels() })
+      const sut = new BusinessCanvasPrismaRepo()
+      await sut.add(makeFakeBusinessCanvasModel())
+      const businessCanvas = await prismock.businessCanvas.findUnique({
+        where: { id: 'any_id' },
+        select: { BusinessCanvasComponent: true }
+      })
+      expect(businessCanvas).toEqual({
+        BusinessCanvasComponent: makeFakeBusinessCanvasComponent()
+      })
+    })
   })
 
-  it('Should relate the BusinessCanvas to the User', async () => {
-    await prismock.user.create({ data: makeFakeUserModel() })
-    await prismock.component.createMany({ data: makeFakeComponentModels() })
-    const sut = new BusinessCanvasPrismaRepo()
-    await sut.add(makeFakeBusinessCanvasModel())
-    const businessCanvas = await prismock.user.findUnique({
-      where: { id: 'any_user_id' },
-      select: { BusinessCanvas: true }
-    })
-    expect(businessCanvas).toEqual({ BusinessCanvas: [makeFakeBusinessCanvas()] })
-  })
-
-  it('Should relate the BusinessCanvas to the Components', async () => {
-    await prismock.user.create({ data: makeFakeUserModel() })
-    await prismock.component.createMany({ data: makeFakeComponentModels() })
-    const sut = new BusinessCanvasPrismaRepo()
-    await sut.add(makeFakeBusinessCanvasModel())
-    const businessCanvas = await prismock.businessCanvas.findUnique({
-      where: { id: 'any_id' },
-      select: { BusinessCanvasComponent: true }
-    })
-    expect(businessCanvas).toEqual({
-      BusinessCanvasComponent: makeFakeBusinessCanvasComponent()
+  describe('fetchAllByUserId()', () => {
+    it('Should return all business canvas of the user', async () => {
+      const sut = new BusinessCanvasPrismaRepo()
+      await prismock.user.create({ data: makeFakeUserModel() })
+      await prismock.component.createMany({ data: makeFakeComponentModels() })
+      await prismock.businessCanvas.create({
+        data: {
+          id: 'any_id',
+          name: 'any_business_canvas_name',
+          createdAt,
+          userId: 'any_user_id'
+        }
+      })
+      const componentEntries = Object.entries(makeFakeBusinessCanvasModel().components)
+      await prismock.businessCanvasComponent.createMany({
+        data: componentEntries.map(([componentName, topics]) => ({
+          businessCanvasId: 'any_id', componentName, topics
+        }))
+      })
+      const businessCanvasOfTheUser = await sut.fetchByUserId('any_user_id')
+      expect(businessCanvasOfTheUser).toEqual([{
+        id: 'any_id',
+        name: 'any_business_canvas_name',
+        createdAt
+      }])
     })
   })
 })
