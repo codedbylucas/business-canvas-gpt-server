@@ -10,9 +10,13 @@ import app from '@/main/configs/app'
 import env from '@/main/configs/env'
 import jwt from 'jsonwebtoken'
 import request from 'supertest'
+import * as uuid from 'uuid'
+
+const userId = uuid.v4()
+const businessCanvasId = uuid.v4()
 
 const makeFakeUserModel = (password: string): UserModel => ({
-  id: 'any_user_id',
+  id: userId,
   name: 'any_name',
   email: 'any_email@mail.com',
   password,
@@ -22,7 +26,7 @@ const makeFakeUserModel = (password: string): UserModel => ({
 })
 
 const makeFakeAccessToken = (): string => {
-  return jwt.sign({ value: 'any_user_id' }, env.jwtSecretKey)
+  return jwt.sign({ value: userId }, env.jwtSecretKey)
 }
 
 const createdAt = new Date()
@@ -40,10 +44,10 @@ const makeFakeComponentModels = (): ComponentModel[] => ([
 ])
 
 const makeFakeBusinessCanvasModel = (): BusinessCanvasModel => ({
-  id: 'any_id',
+  id: businessCanvasId,
   name: 'any_business_canvas_name',
   createdAt,
-  userId: 'any_user_id',
+  userId,
   components: {
     customerSegments: ['any_customer_segments'],
     valuePropositions: ['any_value_propositions'],
@@ -84,20 +88,47 @@ describe('Question Routes', () => {
       await prisma.component.createMany({ data: makeFakeComponentModels() })
       await prisma.businessCanvas.create({
         data: {
-          id: 'any_business_canvas_id',
+          id: businessCanvasId,
           name: 'any_business_canvas_name',
-          userId: 'any_user_id',
+          userId,
           createdAt: new Date()
         }
       })
       const componentEntries = Object.entries(makeFakeBusinessCanvasModel().components)
       await prisma.businessCanvasComponent.createMany({
         data: componentEntries.map(([componentName, topics]) => ({
-          businessCanvasId: 'any_business_canvas_id', componentName, topics
+          businessCanvasId, componentName, topics
         }))
       })
       await request(app)
         .get('/api/business-canvas')
+        .set('x-access-token', makeFakeAccessToken())
+        .expect(200)
+    })
+  })
+
+  describe('GET /business-canvas/:businessCanvasId', () => {
+    it('Should return 200 on fetch one business canvas of the user', async () => {
+      const salt = 12
+      const hashedPassword = await hash('any_password', salt)
+      await prisma.user.create({ data: makeFakeUserModel(hashedPassword) })
+      await prisma.component.createMany({ data: makeFakeComponentModels() })
+      await prisma.businessCanvas.create({
+        data: {
+          id: businessCanvasId,
+          name: 'any_business_canvas_name',
+          userId,
+          createdAt: new Date()
+        }
+      })
+      const componentEntries = Object.entries(makeFakeBusinessCanvasModel().components)
+      await prisma.businessCanvasComponent.createMany({
+        data: componentEntries.map(([componentName, topics]) => ({
+          businessCanvasId, componentName, topics
+        }))
+      })
+      await request(app)
+        .get(`/api/business-canvas/${businessCanvasId}`)
         .set('x-access-token', makeFakeAccessToken())
         .expect(200)
     })
