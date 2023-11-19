@@ -88,4 +88,18 @@ describe('FetchAllOfTheUserBusinessCanvas UseCase', () => {
     await sut.perform('any_user_id')
     expect(executeSpy).toHaveBeenCalledTimes(2)
   })
+
+  it('Should return UserBusinessCanvasSummary list on success', async () => {
+    const { sut } = makeSut()
+    const result = await sut.perform('any_user_id')
+    expect(result.value).toEqual([{
+      id: 'any_business_canvas_id',
+      name: 'any_business_canvas_name',
+      createdAt: '10/12/2023'
+    }, {
+      id: 'other_business_canvas_id',
+      name: 'other_business_canvas_name',
+      createdAt: '10/12/2023'
+    }])
+  })
 })
