@@ -3,6 +3,7 @@ import { adaptMiddleware, adaptRoute } from '@/main/adapters'
 import { createBusinessCanvasControllerFactory } from '@/main/factories/controllers/business-canvas/create-business-canvas-controller-factory'
 import { accessTokenVerifierMiddlewareDecoratorFactory } from '@/main/factories/decorators/access-token-verifier-middleware-decorator'
 import { accessControlMiddlewareFactory } from '@/main/factories/middlewares/access-control-middleware-factory'
+import { fetchAllOfTheUserBusinessCanvasControllerFactory } from '@/main/factories/controllers/business-canvas'
 
 export default async (router: Router): Promise<void> => {
   router.post('/business-canvas',
@@ -13,4 +14,9 @@ export default async (router: Router): Promise<void> => {
     ),
     adaptRoute(createBusinessCanvasControllerFactory())
   )
+
+  router.get('/business-canvas', (
+    adaptMiddleware(accessControlMiddlewareFactory('user')),
+    adaptRoute(fetchAllOfTheUserBusinessCanvasControllerFactory())
+  ))
 }
