@@ -94,7 +94,7 @@ const makeAddRandomUser = (): AddRandomUser => {
   class AddRandomUserStub implements AddRandomUser {
     async perform (): Promise<AddRandomUserRes> {
       return await Promise.resolve({
-        id: 'any_random_user_id', token: 'any_token'
+        id: 'any_random_user_id', token: 'any_token', userName: 'any_random_user_name'
       })
     }
   }
@@ -342,7 +342,7 @@ describe('CreateBusinessCanvas UseCase', () => {
     const { sut } = makeSut()
     const result = await sut.perform({ answers: makeFakeCreateBusinessCanvasDto().answers })
     expect(result.value).toEqual({
-      token: 'any_token', ...makeFakeBusinessCanvasApiModel()
+      token: 'any_token', userName: 'any_random_user_name', ...makeFakeBusinessCanvasApiModel()
     })
   })
 })
