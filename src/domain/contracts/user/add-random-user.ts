@@ -1,5 +1,6 @@
 export interface AddRandomUserRes {
   id: string
+  userName: string
   token: string
 }
 

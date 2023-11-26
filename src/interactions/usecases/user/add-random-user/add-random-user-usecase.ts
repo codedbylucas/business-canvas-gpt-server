@@ -24,6 +24,6 @@ export class AddRandomUserUseCase implements AddRandomUser {
       id, password, email, name: 'Convidado', createdAt, updatedAt, role: 'user'
     })
     const { token } = await this.accessTokenBuilder.perform(id)
-    return { id, token }
+    return { userName: 'Convidado', id, token }
   }
 }
