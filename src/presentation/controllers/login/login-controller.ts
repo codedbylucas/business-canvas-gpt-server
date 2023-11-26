@@ -24,7 +24,7 @@ export class LoginController implements Controller {
         }
         return badRequest(authResult.value)
       }
-      return ok({ token: authResult.value.token })
+      return ok(authResult.value)
     } catch (error: any) {
       return serverError(error)
     }

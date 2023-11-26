@@ -29,6 +29,6 @@ export class AuthUseCase implements Auth {
       return left(new InvalidCredentialsError())
     }
     const { token } = await this.accessTokenBuilder.perform(user.id)
-    return right({ token })
+    return right({ userName: user.name, token })
   }
 }
