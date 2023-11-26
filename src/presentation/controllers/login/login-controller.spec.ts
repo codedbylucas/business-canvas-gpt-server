@@ -26,7 +26,7 @@ const makeValidation = (): Validation => {
 const makeAuth = (): Auth => {
   class AuthStub implements Auth {
     async perform (dto: AuthDto): Promise<AuthRes> {
-      return await Promise.resolve(right({ token: 'any_token' }))
+      return await Promise.resolve(right({ token: 'any_token', userName: 'any_name' }))
     }
   }
   return new AuthStub()
@@ -115,6 +115,6 @@ describe('Login Controller', () => {
   it('Should return 200 if Auth is a success', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(ok({ token: 'any_token' }))
+    expect(httpResponse).toEqual(ok({ userName: 'any_name', token: 'any_token' }))
   })
 })
