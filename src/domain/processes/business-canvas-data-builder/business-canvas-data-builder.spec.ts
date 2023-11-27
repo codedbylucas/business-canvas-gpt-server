@@ -5,6 +5,7 @@ import { BusinessCanvasDataBuilder as sut } from './business-canvas-data-builder
 const makeFakeQuestionsModel = (): QuestionModel[] => ([{
   id: 'type_question_id',
   content: 'Qual o tipo do seu negócio?',
+  type: 'select',
   alternatives: [{
     id: 'in_person_alternative_id',
     description: 'in_person',
@@ -15,9 +16,11 @@ const makeFakeQuestionsModel = (): QuestionModel[] => ([{
     questionId: 'type_question_id'
   }]
 }, {
-  id: 'location_question_id', content: 'Qual a localização ou público para o qual deseja trabalhar (Cidade, estado ou país)?'
+  id: 'location_question_id',
+  content: 'Qual a localização ou público para o qual deseja trabalhar (Cidade, estado ou país)?',
+  type: 'text'
 }, {
-  id: 'description_question_id', content: 'Descreva seu negócio:'
+  id: 'description_question_id', content: 'Descreva seu negócio:', type: 'text-area'
 }])
 
 const makeFakeUserAnswers = (): UserAnswer[] => ([

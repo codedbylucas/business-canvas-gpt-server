@@ -7,6 +7,7 @@ const makeFakeQuestions = (): QuestionModel[] => ([
   {
     id: 'any_question_id',
     content: 'any_content',
+    type: 'select',
     alternatives: [{
       id: 'any_alternative_id',
       description: 'any_alternative',
@@ -17,7 +18,7 @@ const makeFakeQuestions = (): QuestionModel[] => ([
       questionId: 'any_question_id'
     }]
   },
-  { id: 'other_question_id', content: 'other_content' }
+  { id: 'other_question_id', content: 'other_content', type: 'text' }
 ])
 
 const makeFetchAllQuestionsRepo = (): FetchAllQuestionsRepo => {

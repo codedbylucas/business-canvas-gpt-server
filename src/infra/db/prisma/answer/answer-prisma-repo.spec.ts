@@ -1,5 +1,5 @@
 import type { AddManyAnswersRepoDto } from '@/interactions/contracts/db'
-import type { Prisma, PrismaClient } from '@prisma/client'
+import type { Prisma, PrismaClient, QuestionFieldType as PrismaQuestionFieldType } from '@prisma/client'
 import type { AlternativeModel, QuestionModel, UserModel } from '@/domain/models/db-models'
 import { PrismockClient } from 'prismock'
 import { PrismaHelper } from '../helpers/prisma-helper'
@@ -31,9 +31,10 @@ const makeFakeAlternativeModels = (): AlternativeModel[] => ([{
 const makeFakeQuestionModels = (): QuestionModel[] => ([{
   id: 'any_question_id',
   content: 'any_question_content',
+  type: 'select',
   alternatives: makeFakeAlternativeModels()
 }, {
-  id: 'other_question_id', content: 'other_question_content'
+  id: 'other_question_id', content: 'other_question_content', type: 'text'
 }])
 
 const makeFakeAddManyAnswersRepoDto = (): AddManyAnswersRepoDto => ({
@@ -92,9 +93,10 @@ describe('AnswerPrisma Repo', () => {
 
   it('Should create many Answers to an User on success', async () => {
     await prismock.user.create({ data: makeFakeUserModel() })
-    const data: QuestionModel[] = makeFakeQuestionModels().map(
-      ({ id, content }) => ({ id, content })
-    )
+    const data = makeFakeQuestionModels().map(({ id, content, type }) => {
+      const fieldType = type as PrismaQuestionFieldType
+      return { id, content, type: fieldType }
+    })
     await prismock.question.createMany({ data })
     await prismock.alternative.createMany({ data: makeFakeAlternativeModels() })
     const sut = new AnswerPrismaRepo()
@@ -105,9 +107,10 @@ describe('AnswerPrisma Repo', () => {
 
   it('Should relate the answers to the user', async () => {
     await prismock.user.create({ data: makeFakeUserModel() })
-    const data: QuestionModel[] = makeFakeQuestionModels().map(
-      ({ id, content }) => ({ id, content })
-    )
+    const data = makeFakeQuestionModels().map(({ id, content, type }) => {
+      const fieldType = type as PrismaQuestionFieldType
+      return { id, content, type: fieldType }
+    })
     await prismock.question.createMany({ data })
     await prismock.alternative.createMany({ data: makeFakeAlternativeModels() })
     const sut = new AnswerPrismaRepo()

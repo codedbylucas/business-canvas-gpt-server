@@ -1,5 +1,6 @@
 import type { AddManyQuestions } from '@/domain/contracts'
 import type { AlternativeModel, QuestionModel } from '@/domain/models/db-models'
+import type { QuestionFieldType } from '@/domain/entities/question/question-entity-model'
 import type { AddManyQuestionsRepo } from '@/interactions/contracts/db'
 import type { IdBuilder } from '@/interactions/contracts/id/id-builder'
 import { Alternative } from '@/domain/entities/alternative/alternative'
@@ -18,7 +19,7 @@ export class AddManyQuestionsUseCase implements AddManyQuestions {
   }
 
   private createQuestionsModel (questions: Question[]): QuestionModel[] {
-    const questionsModel = questions.map((question) => {
+    const questionsModel: QuestionModel[] = questions.map((question) => {
       const questionId = this.idBuilder.build().id
       const alternatives = Question.getQuestion(question)?.alternatives
       const alternativesModel: AlternativeModel[] = alternatives?.map((alternative) => ({
@@ -29,10 +30,10 @@ export class AddManyQuestionsUseCase implements AddManyQuestions {
       return {
         id: questionId,
         content: Question.getQuestion(question)?.content as string,
-        ...(alternativesModel.length > 0 && { alternatives: alternativesModel }),
-        type: Question.getQuestion(question)?.type
+        type: Question.getQuestion(question)?.type as QuestionFieldType,
+        ...(alternativesModel.length > 0 && { alternatives: alternativesModel })
       }
     })
-    return questionsModel as QuestionModel[]
+    return questionsModel
   }
 }

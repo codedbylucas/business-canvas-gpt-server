@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client'
+import type { PrismaClient, QuestionFieldType as PrismaQuestionFieldType } from '@prisma/client'
 import type { AlternativeModel, QuestionModel } from '@/domain/models/db-models'
 import { PrismockClient } from 'prismock'
 import { PrismaHelper } from '../helpers/prisma-helper'
@@ -8,9 +8,10 @@ const makeFakeQuestionsModel = (): QuestionModel[] => ([
   {
     id: 'any_id',
     content: 'any_content',
+    type: 'select',
     alternatives: makeFakeAlternativesModel()
   }, {
-    id: 'other_id', content: 'other_content'
+    id: 'other_id', content: 'other_content', type: 'text'
   }
 ])
 
@@ -52,8 +53,8 @@ describe('QuestionPrisma Repo', () => {
       const questions = await prismock.question.findMany()
       const alternatives = await prismock.alternative.findMany()
       expect(questions).toEqual([
-        { id: 'any_id', content: 'any_content' },
-        { id: 'other_id', content: 'other_content' }
+        { id: 'any_id', content: 'any_content', type: 'select' },
+        { id: 'other_id', content: 'other_content', type: 'text' }
       ])
       expect(alternatives).toEqual(makeFakeAlternativesModel())
     })
@@ -62,9 +63,10 @@ describe('QuestionPrisma Repo', () => {
   describe('fetchAll()', () => {
     it('Should return all questions with alternatives on success', async () => {
       const sut = new QuestionPrismaRepo()
-      const data: QuestionModel[] = makeFakeQuestionsModel().map(
-        ({ id, content }) => ({ id, content })
-      )
+      const data = makeFakeQuestionsModel().map(({ id, content, type }) => {
+        const fieldType = type as PrismaQuestionFieldType
+        return { id, content, type: fieldType }
+      })
       await prismock.question.createMany({ data })
       await prismock.alternative.createMany({ data: makeFakeAlternativesModel() })
       const questions = await sut.fetchAll()

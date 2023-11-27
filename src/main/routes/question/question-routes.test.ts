@@ -12,8 +12,8 @@ import app from '@/main/configs/app'
 import request from 'supertest'
 
 const makeFakeQuestions = (): QuestionModel[] => ([
-  { id: 'any_id', content: 'any_content' },
-  { id: 'other_id', content: 'other_content' }
+  { id: 'any_id', content: 'any_content', type: 'text' },
+  { id: 'other_id', content: 'other_content', type: 'text' }
 ])
 
 let redis: Redis

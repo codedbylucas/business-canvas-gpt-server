@@ -59,8 +59,9 @@ model Component {
 }
 
 model Question {
-  id      String @id(map: "PK_QUESTION") @unique(map: "UQ_QUESTION_ID") @db.VarChar(150)
-  content String @db.VarChar(300)
+  id      String            @id(map: "PK_QUESTION") @unique(map: "UQ_QUESTION_ID") @db.VarChar(150)
+  content String            @db.VarChar(300)
+  type    QuestionFieldType
 
   Answer      Answer[]
   Alternative Alternative[]
@@ -100,4 +101,12 @@ enum Role {
   admin
 
   @@map("ROLE")
+}
+
+enum QuestionFieldType {
+  select
+  text
+  text_area
+
+  @@map("QUESTION_FIELD_TYPE")
 }

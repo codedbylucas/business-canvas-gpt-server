@@ -2,17 +2,18 @@
  * @jest-environment ./src/main/configs/prisma-jest/prisma-environment-jest.ts
  */
 
-import type { PrismaClient } from '@prisma/client'
-import type { Redis } from 'ioredis'
 import type { AlternativeModel, QuestionModel } from '@/domain/models/db-models'
 import { RedisHelper } from '@/infra/cache/redis/helpers/redis-helper'
 import { PrismaHelper } from '@/infra/db/prisma/helpers/prisma-helper'
-import { addAndReplyQuestionsSeed } from './add-and-reply-questions-seed'
+import type { PrismaClient, Question } from '@prisma/client'
+import type { Redis } from 'ioredis'
 import RedisMock from 'ioredis-mock'
+import { addAndReplyQuestionsSeed } from './add-and-reply-questions-seed'
 
-const makeFakeQuestions = (): QuestionModel[] => ([{
+const makeFakeQuestions = (): Question[] => ([{
   id: 'any_question_id',
-  content: 'any_content'
+  content: 'any_content',
+  type: 'text'
 }])
 
 const makeFakeAlternatives = (): AlternativeModel[] => ([{
