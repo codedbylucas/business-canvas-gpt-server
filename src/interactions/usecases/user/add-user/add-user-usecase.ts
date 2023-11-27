@@ -32,6 +32,6 @@ export class AddUserUseCase implements AddUser {
       id, name, email, password: hash, role: 'user', createdAt: date, updatedAt: date
     })
     const { token } = await this.accessTokenBuilder.perform(id)
-    return right({ token })
+    return right({ userName: name, token })
   }
 }

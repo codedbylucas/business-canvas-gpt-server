@@ -20,7 +20,7 @@ export class SignUpController implements Controller {
       if (addUserResult.isLeft()) {
         return badRequest(addUserResult.value)
       }
-      return created({ token: addUserResult.value.token })
+      return created(addUserResult.value)
     } catch (error: any) {
       return serverError(error)
     }

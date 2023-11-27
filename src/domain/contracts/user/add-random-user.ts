@@ -1,7 +1,7 @@
-export interface AddRandomUserRes {
+import { type AddUserResModel } from '@/domain/models/output-models'
+
+export interface AddRandomUserRes extends AddUserResModel {
   id: string
-  userName: string
-  token: string
 }
 
 export interface AddRandomUser {
