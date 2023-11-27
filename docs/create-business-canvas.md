@@ -33,7 +33,7 @@ Exemplo:
   },
   {
     "questionId": "1235",
-    "alternativeId": "4567",
+    "alternativeId": "4567"
   },
   {
     "questionId": "1236",
@@ -47,8 +47,8 @@ Exemplo:
 - **answer** (string, opcional): A resposta do usuário se a pergunta não tiver alternativas.
 - **alternativeId** e **answer** são opcionais, porém um deles deve ser informado obrigatóriamente em cada resposta.
 
-
 ## Caso de sucesso
+
 - ✅ Valida o token de autenticação do usuário.
 - ✅ Valida se o ID de cada questão representam uma Question no banco de dados.
 - ✅ Valida se a questão que contém alternativas foi preenchida com um ID de alternativa válido.
@@ -66,57 +66,37 @@ Exemplo:
 - ✅ Código de status: **201 Created**
 - ✅ Corpo da resposta: O Business Canvas gerado pelo GPT.
 
-
 Exemplo:
+
 ```json
 {
   "name": "Escola de Inglês",
-  "customerSegments": [
-    "Respostas 1.",
-    "Respostas 2."
-  ],
-  "valuePropositions": [
-    "Respostas 1.",
-    "Respostas 2.",
-    "Respostas 3."
-  ],
-  "channels": [
-    "Respostas 1."
-  ],
-  "customerRelationships": [
-    "Respostas 1."
-  ],
-  "revenueStreams": [
-    "Respostas 1."
-  ],
-  "keyResources": [
-    "Respostas 1."
-  ],
-  "keyActivities": [
-    "Respostas 1."
-  ],
-  "keyPartnerships": [
-    "Respostas 1."
-  ],
-  "costStructure": [
-    "Respostas 1."
-  ]
+  "customerSegments": ["Respostas 1.", "Respostas 2."],
+  "valuePropositions": ["Respostas 1.", "Respostas 2.", "Respostas 3."],
+  "channels": ["Respostas 1."],
+  "customerRelationships": ["Respostas 1."],
+  "revenueStreams": ["Respostas 1."],
+  "keyResources": ["Respostas 1."],
+  "keyActivities": ["Respostas 1."],
+  "keyPartnerships": ["Respostas 1."],
+  "costStructure": ["Respostas 1."]
 }
 ```
 
 - **name** (string): O nome gerado baseado na descrição e tipo de negócio associado ao Business Canvas.
-- Os *Componentes* (***customerSegments***, ***valueProposition***, ***revenueStreams*** ...) representam algumas das seções do Business Canvas.
+- Os _Componentes_ (**_customerSegments_**, **_valueProposition_**, **_revenueStreams_** ...) representam algumas das seções do Business Canvas.
 - Cada seção contém um array de respostas correspondentes.
 - Caso o usuário não esteja cadastrado será retornado junto com as respostas um **userId** como um usuário convidado.
 
 Exemplo:
+
 ```json
 {
-  "userId": "1234",
+  "userName": "Nome do usuário",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2vy...",
   ... //Dados das respostas
 }
 ```
-
 
 ## Casos de Exceção
 
@@ -127,7 +107,7 @@ Exemplo:
   - ✅ Se o client informar mais dados do que os requeridos.
   - ✅ Se o tipo do dado informado não for válido.
 - Código de status: **401 Unauthorized**
-  - ✅ Se o existir um *x-acess-token* no headers com token inválido ou expirado.
+  - ✅ Se o existir um _x-acess-token_ no headers com token inválido ou expirado.
 - Código de status: **404 Not Found**
   - ✅ Se não encontrar as questões para as respostas.
 - Código de status: **500 Internal Server Error**

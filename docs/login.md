@@ -25,6 +25,7 @@ Exemplo:
 ```
 
 ## Caso de sucesso
+
 - ✅ Valida os campos do corpo da requisição.
 - ✅ Busca um usuário pelo email.
 - ✅ Valida se a senha coincide com a hash salva no DB.
@@ -32,11 +33,13 @@ Exemplo:
 - ✅ Retorna um token de autenticação para o usuário logado.
 
 ### Resposta
+
 - ✅ Código de status: **200 OK**
 - ✅ Corpo da resposta: Um objeto JSON contendo o token de autenticação.
 
 ```json
 {
+  "userName": "Nome do usuário",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2vy..."
 }
 ```
@@ -44,6 +47,7 @@ Exemplo:
 ## Casos de Exceção
 
 ### Respostas
+
 - Código de status: **400 Bad Request**
   - ✅ Se algum campo do corpo da requisição estiver ausente.
   - ✅ Se o tipo do dado informado não for válido.

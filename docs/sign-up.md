@@ -29,6 +29,7 @@ Exemplo:
 ```
 
 ## Caso de sucesso
+
 - ✅ Valida os campos do corpo da requisição.
 - ✅ Valida se já existe um usuário com o email fornecido.
 - ✅ Gera uma senha criptografada.
@@ -38,6 +39,7 @@ Exemplo:
 - ✅ Retorna um token de autenticação para o novo usuário.
 
 ### Resposta
+
 - ✅ Código de status: **201 Created**
 - ✅ Corpo da resposta: Um objeto JSON contendo o token de autenticação.
 
@@ -45,6 +47,7 @@ Exemplo:
 
 ```json
 {
+  "userName": "Nome do usuário",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vy... (token JWT)"
 }
 ```
@@ -52,6 +55,7 @@ Exemplo:
 ## Casos de Exceção
 
 ### Respostas
+
 - Código de status: **400 Bad Request**
   - ✅ Se algum campo do corpo da requisição estiver ausente ou for inválido.
   - ✅ Se a senha e a confirmação de senha não coincidirem.
