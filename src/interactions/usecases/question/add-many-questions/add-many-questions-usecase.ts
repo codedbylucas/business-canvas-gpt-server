@@ -18,7 +18,7 @@ export class AddManyQuestionsUseCase implements AddManyQuestions {
   }
 
   private createQuestionsModel (questions: Question[]): QuestionModel[] {
-    const questionsModel: QuestionModel[] = questions.map((question) => {
+    const questionsModel = questions.map((question) => {
       const questionId = this.idBuilder.build().id
       const alternatives = Question.getQuestion(question)?.alternatives
       const alternativesModel: AlternativeModel[] = alternatives?.map((alternative) => ({
@@ -29,9 +29,10 @@ export class AddManyQuestionsUseCase implements AddManyQuestions {
       return {
         id: questionId,
         content: Question.getQuestion(question)?.content as string,
-        ...(alternativesModel.length > 0 && { alternatives: alternativesModel })
+        ...(alternativesModel.length > 0 && { alternatives: alternativesModel }),
+        type: Question.getQuestion(question)?.type
       }
     })
-    return questionsModel
+    return questionsModel as QuestionModel[]
   }
 }

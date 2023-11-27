@@ -18,16 +18,17 @@ export class Question {
   }
 
   static createMany (): Question[] {
-    const contents = [
-      'Qual a localização ou público para o qual deseja trabalhar (Cidade, estado ou país)?',
-      'Descreva seu negócio:'
+    const content = 'Qual a localização ou público para o qual deseja trabalhar (Cidade, estado ou país)?'
+    const content2 = 'Descreva seu negócio:'
+    const questions = [
+      this.create({ content, type: 'text' }),
+      this.create({ content: content2, type: 'text-area' })
     ]
-    const questions = contents.map(content => this.create({ content }))
     const alternatives: Alternative[] = [
       Alternative.create('Presencial'), Alternative.create('Online')
     ]
     const question = this.create({
-      content: 'Qual o tipo do seu negócio?', alternatives
+      content: 'Qual o tipo do seu negócio?', alternatives, type: 'select'
     })
     return [question, ...questions]
   }
