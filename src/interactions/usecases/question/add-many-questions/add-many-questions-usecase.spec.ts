@@ -11,10 +11,11 @@ jest.mock('@/domain/entities/question/question', () => ({
   Question: {
     createMany: jest.fn(() => (makeFakeQuestionsEntityModel())),
     getQuestion: jest.fn((
-      question: { content: string, alternatives?: Alternative[] }
+      question: { content: string, alternatives?: Alternative[], type: 'text' | 'text-area' | 'select' }
     ) => ({
       content: question.content,
-      alternatives: question.alternatives
+      alternatives: question.alternatives,
+      type: question.type
     }))
   }
 }))
@@ -33,15 +34,18 @@ const makeFakeQuestionsEntityModel = (): QuestionEntityModel[] => ([{
   alternatives: [
     Alternative.create('any_alternative'),
     Alternative.create('other_alternative')
-  ]
+  ],
+  type: 'select'
 }, {
-  content: 'other_content'
+  content: 'other_content',
+  type: 'text'
 }
 ])
 
 const makeFakeQuestionsModel = (): QuestionModel[] => ([{
   id: 'any_id_1',
   content: 'any_content',
+  type: 'select',
   alternatives: [{
     id: 'any_id_2',
     description: 'any_alternative',
@@ -52,7 +56,7 @@ const makeFakeQuestionsModel = (): QuestionModel[] => ([{
     questionId: 'any_id_1'
   }]
 }, {
-  id: 'any_id_4', content: 'other_content'
+  id: 'any_id_4', content: 'other_content', type: 'text'
 }])
 
 const makeIdBuilder = (): IdBuilder => {

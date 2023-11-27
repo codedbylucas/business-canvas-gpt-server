@@ -13,6 +13,7 @@ describe('Question Entity', () => {
       {
         question: {
           content: 'Qual o tipo do seu negócio?',
+          type: 'select',
           alternatives: [
             { description: 'Presencial' },
             { description: 'Online' }
@@ -21,11 +22,12 @@ describe('Question Entity', () => {
       },
       {
         question: {
-          content: 'Qual a localização ou público para o qual deseja trabalhar (Cidade, estado ou país)?'
+          content: 'Qual a localização ou público para o qual deseja trabalhar (Cidade, estado ou país)?',
+          type: 'text'
         }
       },
       {
-        question: { content: 'Descreva seu negócio:' }
+        question: { content: 'Descreva seu negócio:', type: 'text-area' }
       }
     ])
   })
