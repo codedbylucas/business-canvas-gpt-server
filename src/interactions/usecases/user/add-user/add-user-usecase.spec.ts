@@ -245,6 +245,6 @@ describe('AddUser UseCase', () => {
   it('Should return AccessTokenModel if AccessTokenBuilder is a success', async () => {
     const { sut } = makeSut()
     const result = await sut.perform(makeFakeUserDto())
-    expect(result.value).toEqual({ token: 'any_token' })
+    expect(result.value).toEqual({ userName: 'any_name', token: 'any_token' })
   })
 })

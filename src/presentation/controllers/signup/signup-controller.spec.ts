@@ -28,7 +28,7 @@ const makeValidation = (): Validation => {
 const makeAddUser = (): AddUser => {
   class AddUserStub implements AddUser {
     async perform (account: UserDto): Promise<AddUserRes> {
-      return await Promise.resolve(right({ token: 'any_token' }))
+      return await Promise.resolve(right({ userName: 'any_name', token: 'any_token' }))
     }
   }
   return new AddUserStub()
@@ -108,6 +108,6 @@ describe('SignUp Controller', () => {
   it('Should return 201 if AddUser is a success', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(created({ token: 'any_token' }))
+    expect(httpResponse).toEqual(created({ userName: 'any_name', token: 'any_token' }))
   })
 })
