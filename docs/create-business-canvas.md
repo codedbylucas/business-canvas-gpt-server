@@ -70,6 +70,7 @@ Exemplo:
 
 ```json
 {
+  "id": "1234",
   "name": "Escola de Inglês",
   "customerSegments": ["Respostas 1.", "Respostas 2."],
   "valuePropositions": ["Respostas 1.", "Respostas 2.", "Respostas 3."],
@@ -86,6 +87,9 @@ Exemplo:
 - **name** (string): O nome gerado baseado na descrição e tipo de negócio associado ao Business Canvas.
 - Os _Componentes_ (**_customerSegments_**, **_valueProposition_**, **_revenueStreams_** ...) representam algumas das seções do Business Canvas.
 - Cada seção contém um array de respostas correspondentes.
+
+#### Usuário sem cadastro
+
 - Caso o usuário não esteja cadastrado será retornado junto com as respostas um **userId** como um usuário convidado.
 
 Exemplo:
@@ -94,7 +98,7 @@ Exemplo:
 {
   "userName": "Nome do usuário",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2vy...",
-  ... //Dados das respostas
+  ... //Dados da resposta
 }
 ```
 
