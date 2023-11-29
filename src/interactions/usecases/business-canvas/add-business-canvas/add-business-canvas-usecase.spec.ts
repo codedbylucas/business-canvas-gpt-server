@@ -93,4 +93,10 @@ describe('AddBusinessCanvas UseCase', () => {
     await sut.perform(makeFakeAddBusinessCanvasDto())
     expect(addSpy).toHaveBeenCalledWith(makeFakeBusinessCanvasModel())
   })
+
+  it('Should return BusinessCanvasId if AddBusinessCanvasRepo is a success', async () => {
+    const { sut } = makeSut()
+    const result = await sut.perform(makeFakeAddBusinessCanvasDto())
+    expect(result).toEqual({ id: 'any_id' })
+  })
 })
