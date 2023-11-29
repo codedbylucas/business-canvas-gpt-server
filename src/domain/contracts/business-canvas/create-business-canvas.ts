@@ -14,8 +14,11 @@ export interface CreateBusinessCanvasDto {
 }
 
 export type CreateBusinessCanvasRes = Either<
-AnswerErrors, BusinessCanvasApiModel & { token?: string, userName?: string }
->
+AnswerErrors, BusinessCanvasApiModel & {
+  id: string
+  token?: string
+  userName?: string
+}>
 
 export interface CreateBusinessCanvas {
   perform: (dto: CreateBusinessCanvasDto) => Promise<CreateBusinessCanvasRes>
