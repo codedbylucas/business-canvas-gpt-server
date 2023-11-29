@@ -48,7 +48,10 @@ const makeValidation = (): Validation => {
 const makeCreateBusinessCanvas = (): CreateBusinessCanvas => {
   class CreateBusinessCanvasStub implements CreateBusinessCanvas {
     async perform (dto: CreateBusinessCanvasDto): Promise<CreateBusinessCanvasRes> {
-      return await Promise.resolve(right(makeFakeBusinessCanvasApiModel()))
+      return await Promise.resolve(right({
+        id: 'any_business_canvas_id',
+        ...makeFakeBusinessCanvasApiModel()
+      }))
     }
   }
   return new CreateBusinessCanvasStub()
@@ -133,6 +136,9 @@ describe('CreateBusinessCanvas Controller', () => {
   it('Should return 201 if CreateBusinessCanvas is a success', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(created(makeFakeBusinessCanvasApiModel()))
+    expect(httpResponse).toEqual(created({
+      id: 'any_business_canvas_id',
+      ...makeFakeBusinessCanvasApiModel()
+    }))
   })
 })
