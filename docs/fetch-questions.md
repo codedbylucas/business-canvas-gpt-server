@@ -6,8 +6,7 @@ Esta funcionalidade permite aos usuários acessarem um conjunto de questões rel
 
 ## Endpoint
 
-`GET /api/questions`
-
+`GET /api/question`
 
 ## Caso de sucesso
 
@@ -28,12 +27,12 @@ Exemplo:
     "alternatives": [
       {
         "id": "123",
-        "description": "Presencial",
+        "description": "Presencial"
       },
       {
         "id": "1234",
         "description": "Online"
-      },
+      }
     ]
   },
   {
@@ -50,6 +49,7 @@ Exemplo:
 ## Casos de Exceção
 
 ### Respostas
+
 - Código de status: **404 Not Found**
   - ✅ Se não encontrar as questões.
 - Código de status: **500 Internal Server Error**
