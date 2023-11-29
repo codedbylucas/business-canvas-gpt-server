@@ -1,4 +1,4 @@
-import type { AddManyAnswers, AddManyAnswersDto, AddBusinessCanvas, AddBusinessCanvasDto, AddRandomUser, CreateBusinessCanvas, CreateBusinessCanvasDto, AddRandomUserRes } from '@/domain/contracts'
+import type { AddManyAnswers, AddManyAnswersDto, AddBusinessCanvas, AddBusinessCanvasDto, AddRandomUser, CreateBusinessCanvas, CreateBusinessCanvasDto, AddRandomUserRes, BusinessCanvasId } from '@/domain/contracts'
 import type { CreateBusinessCanvasApi, CreateBusinessCanvasApiDto } from '@/interactions/contracts/api'
 import type { BusinessCanvasApiModel } from '@/domain/models/output-models'
 import type { QuestionModel } from '@/domain/models/db-models'
@@ -126,8 +126,8 @@ const makeCreateBusinessCanvasApi = (): CreateBusinessCanvasApi => {
 
 const makeAddBusinessCanvas = (): AddBusinessCanvas => {
   class AddBusinessCanvasStub implements AddBusinessCanvas {
-    async perform (dto: AddBusinessCanvasDto): Promise<void> {
-      await Promise.resolve()
+    async perform (dto: AddBusinessCanvasDto): Promise<BusinessCanvasId> {
+      return await Promise.resolve({ id: 'any_business_canvas_id' })
     }
   }
   return new AddBusinessCanvasStub()
@@ -340,14 +340,19 @@ describe('CreateBusinessCanvas UseCase', () => {
   it('Should return BusinessCanvasApiModel if AddBusinessCanvas is a success', async () => {
     const { sut } = makeSut()
     const result = await sut.perform(makeFakeCreateBusinessCanvasDto())
-    expect(result.value).toEqual(makeFakeBusinessCanvasApiModel())
+    expect(result.value).toEqual({
+      id: 'any_business_canvas_id', ...makeFakeBusinessCanvasApiModel()
+    })
   })
 
-  it('Should return BusinessCanvasApiModel with userId if AddBusinessCanvas is a success and userId not provided in request', async () => {
+  it('Should return BusinessCanvasApiModel with token and userName if AddBusinessCanvas is a success and userId not provided in request', async () => {
     const { sut } = makeSut()
     const result = await sut.perform({ answers: makeFakeCreateBusinessCanvasDto().answers })
     expect(result.value).toEqual({
-      token: 'any_token', userName: 'any_random_user_name', ...makeFakeBusinessCanvasApiModel()
+      id: 'any_business_canvas_id',
+      token: 'any_token',
+      userName: 'any_random_user_name',
+      ...makeFakeBusinessCanvasApiModel()
     })
   })
 })
